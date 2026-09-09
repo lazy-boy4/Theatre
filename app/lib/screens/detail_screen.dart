@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/detail_provider.dart';
 import '../providers/download_provider.dart';
-import '../api/theatre_api.dart';
+import '../ffi/bridge.dart';
 import 'player_screen.dart';
 
 class DetailScreen extends ConsumerWidget {

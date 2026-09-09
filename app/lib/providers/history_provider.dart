@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../api/theatre_api.dart';
+import '../ffi/bridge.dart';
 
 final continueWatchingProvider = FutureProvider<List<HistoryEntry>>(
-  (ref) => TheatreApi.instance.continueWatching(limit: 20),
+  (ref) => theatreContinueWatching(limit: 20),
 );
 
 final allHistoryProvider = FutureProvider<List<HistoryEntry>>(
-  (ref) => TheatreApi.instance.allHistory(limit: 100),
+  (ref) => theatreAllHistory(limit: 100),
 );

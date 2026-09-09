@@ -10,6 +10,7 @@ pub mod health;
 pub mod khddhub;
 pub mod moviebox;
 pub mod registry;
+pub(crate) mod util;
 
 pub use registry::SourceRegistry;
 
@@ -30,6 +31,4 @@ pub trait Source: Send + Sync {
     async fn get_details(&self, content_id: &str) -> Result<Details>;
 
     async fn resolve(&self, content_id: &str, variant: Option<&str>) -> Result<ResolvedStream>;
-
-    async fn health_check(&self) -> SourceStatus;
 }

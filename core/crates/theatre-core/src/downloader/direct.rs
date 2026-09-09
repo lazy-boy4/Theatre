@@ -1,6 +1,6 @@
 //! Direct-file HTTP download with range resume.
 
-use super::queue::{DownloadJob, DownloadQueue};
+use super::queue::{DownloadJob, DownloadQueue, JobStatus};
 use crate::{
     api::types::ResolvedStream,
     error::{Result, TheatreError},
@@ -97,7 +97,7 @@ pub async fn download_direct(
             resumable: false,
         })?;
 
-    queue.set_done(&job.id)?;
+    queue.set_status(&job.id, JobStatus::Done)?;
     Ok(())
 }
 

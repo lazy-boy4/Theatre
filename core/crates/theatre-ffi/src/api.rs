@@ -9,8 +9,8 @@
 //! freezed) — with function names and payload shapes per data-contract.md.
 //! Errors are strings at the boundary (architecture §6 invariant).
 
-use theatre_core::api::{self};
 use theatre_core::api::types::*;
+use theatre_core::api::{self};
 
 fn from_json<T: serde::de::DeserializeOwned>(s: &str) -> Result<T, String> {
     serde_json::from_str(s).map_err(|e| format!("bad argument json: {}", e))
@@ -18,6 +18,23 @@ fn from_json<T: serde::de::DeserializeOwned>(s: &str) -> Result<T, String> {
 
 fn to_json<T: serde::Serialize>(v: &T) -> Result<String, String> {
     serde_json::to_string(v).map_err(|e| e.to_string())
+}
+
+/// One pipe for every JSON-returning endpoint: await → stringify → encode.
+macro_rules! pipe {
+    ($call:expr) => {
+        $call
+            .await
+            .map_err(|e| e.to_string())
+            .and_then(|v| to_json(&v))
+    };
+}
+
+/// One pipe for every unit-returning endpoint: await → stringify.
+macro_rules! pipe_unit {
+    ($call:expr) => {
+        $call.await.map_err(|e| e.to_string())
+    };
 }
 
 #[flutter_rust_bridge::frb(init)]
@@ -29,10 +46,7 @@ pub fn init_app() {
 #[flutter_rust_bridge::frb]
 pub async fn theatre_init(config_json: String) -> Result<String, String> {
     let config: InitConfig = from_json(&config_json)?;
-    api::lifecycle::init(config)
-        .await
-        .map_err(|e| e.to_string())
-        .and_then(|r| to_json(&r))
+    pipe!(api::lifecycle::init(config))
 }
 
 #[flutter_rust_bridge::frb]
@@ -46,27 +60,18 @@ pub async fn theatre_search(
     query: String,
     source_filter: Option<Vec<String>>,
 ) -> Result<String, String> {
-    api::content::search(query, source_filter)
-        .await
-        .map_err(|e| e.to_string())
-        .and_then(|p| to_json(&p))
+    pipe!(api::content::search(query, source_filter))
 }
 
 #[flutter_rust_bridge::frb]
 pub async fn theatre_get_details(content_json: String) -> Result<String, String> {
     let content: ContentRef = from_json(&content_json)?;
-    api::content::get_details(content)
-        .await
-        .map_err(|e| e.to_string())
-        .and_then(|d| to_json(&d))
+    pipe!(api::content::get_details(content))
 }
 
 #[flutter_rust_bridge::frb]
 pub async fn theatre_list_sources() -> Result<String, String> {
-    api::content::list_sources()
-        .await
-        .map_err(|e| e.to_string())
-        .and_then(|v| to_json(&v))
+    pipe!(api::content::list_sources())
 }
 
 // ── Resolver ───────────────────────────────────────────────────────
@@ -77,10 +82,7 @@ pub async fn theatre_resolve(
     force_refresh: bool,
 ) -> Result<String, String> {
     let content: ContentRef = from_json(&content_json)?;
-    api::resolver::resolve(content, variant, force_refresh)
-        .await
-        .map_err(|e| e.to_string())
-        .and_then(|s| to_json(&s))
+    pipe!(api::resolver::resolve(content, variant, force_refresh))
 }
 
 // ── Downloads ───────────────────────────────────────────────────
@@ -93,79 +95,57 @@ pub async fn theatre_enqueue_download(
 ) -> Result<String, String> {
     let content: ContentRef = from_json(&content_json)?;
     let stream: ResolvedStream = from_json(&stream_json)?;
-    api::downloader::enqueue_download(content, stream, title, variant)
-        .await
-        .map_err(|e| e.to_string())
+    pipe_unit!(api::downloader::enqueue_download(
+        content, stream, title, variant
+    ))
 }
 
 #[flutter_rust_bridge::frb]
 pub async fn theatre_list_downloads() -> Result<String, String> {
-    api::downloader::list_downloads()
-        .await
-        .map_err(|e| e.to_string())
-        .and_then(|v| to_json(&v))
+    pipe!(api::downloader::list_downloads())
 }
 
 #[flutter_rust_bridge::frb]
 pub async fn theatre_pause_download(id: String) -> Result<(), String> {
-    api::downloader::pause_download(id)
-        .await
-        .map_err(|e| e.to_string())
+    pipe_unit!(api::downloader::pause_download(id))
 }
 
 #[flutter_rust_bridge::frb]
 pub async fn theatre_cancel_download(id: String) -> Result<(), String> {
-    api::downloader::cancel_download(id)
-        .await
-        .map_err(|e| e.to_string())
+    pipe_unit!(api::downloader::cancel_download(id))
 }
 
 #[flutter_rust_bridge::frb]
 pub async fn theatre_resume_download(id: String) -> Result<(), String> {
-    api::downloader::resume_download(id)
-        .await
-        .map_err(|e| e.to_string())
+    pipe_unit!(api::downloader::resume_download(id))
 }
 
 // ── History ─────────────────────────────────────────────────────
 #[flutter_rust_bridge::frb]
 pub async fn theatre_record_playback(entry_json: String) -> Result<(), String> {
     let entry: theatre_core::history::HistoryEntry = from_json(&entry_json)?;
-    api::history::record_playback(entry)
-        .await
-        .map_err(|e| e.to_string())
+    pipe_unit!(api::history::record_playback(entry))
 }
 
 #[flutter_rust_bridge::frb]
 pub async fn theatre_continue_watching(limit: u32) -> Result<String, String> {
-    api::history::continue_watching(limit)
-        .await
-        .map_err(|e| e.to_string())
-        .and_then(|v| to_json(&v))
+    pipe!(api::history::continue_watching(limit))
 }
 
 #[flutter_rust_bridge::frb]
 pub async fn theatre_all_history(limit: u32, offset: u32) -> Result<String, String> {
-    api::history::all_history(limit, offset)
-        .await
-        .map_err(|e| e.to_string())
-        .and_then(|v| to_json(&v))
+    pipe!(api::history::all_history(limit, offset))
 }
 
 #[flutter_rust_bridge::frb]
 pub async fn theatre_delete_history(id: String) -> Result<(), String> {
-    api::history::delete_history(id)
-        .await
-        .map_err(|e| e.to_string())
+    pipe_unit!(api::history::delete_history(id))
 }
 
 // ── Library ─────────────────────────────────────────────────────
 #[flutter_rust_bridge::frb]
 pub async fn theatre_list_locations() -> Result<String, String> {
-    api::library::list_library_locations()
-        .await
-        .map_err(|e| e.to_string())
-        .and_then(|v| to_json(&v))
+    pipe!(api::library::list_library_locations())
 }
 
 #[flutter_rust_bridge::frb]
@@ -174,25 +154,17 @@ pub async fn theatre_add_location(
     label: Option<String>,
     is_saf: bool,
 ) -> Result<String, String> {
-    api::library::add_library_location(path, label, is_saf)
-        .await
-        .map_err(|e| e.to_string())
-        .and_then(|v| to_json(&v))
+    pipe!(api::library::add_library_location(path, label, is_saf))
 }
 
 #[flutter_rust_bridge::frb]
 pub async fn theatre_remove_location(id: String) -> Result<(), String> {
-    api::library::remove_library_location(id)
-        .await
-        .map_err(|e| e.to_string())
+    pipe_unit!(api::library::remove_library_location(id))
 }
 
 #[flutter_rust_bridge::frb]
 pub async fn theatre_browse_folder(path: String) -> Result<String, String> {
-    api::library::browse_folder(path)
-        .await
-        .map_err(|e| e.to_string())
-        .and_then(|v| to_json(&v))
+    pipe!(api::library::browse_folder(path))
 }
 
 // ── Settings ───────────────────────────────────────────────────
@@ -205,7 +177,5 @@ pub async fn theatre_get_setting(key: String) -> Result<Option<String>, String> 
 
 #[flutter_rust_bridge::frb]
 pub async fn theatre_set_setting(key: String, value: String) -> Result<(), String> {
-    api::settings::set_setting(key, value)
-        .await
-        .map_err(|e| e.to_string())
+    pipe_unit!(api::settings::set_setting(key, value))
 }

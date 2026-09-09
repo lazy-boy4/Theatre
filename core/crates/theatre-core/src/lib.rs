@@ -9,7 +9,6 @@ pub mod history;
 pub mod library;
 pub mod net;
 pub mod proxy;
-pub mod resolver;
 pub mod settings;
 pub mod sources;
 pub mod state;

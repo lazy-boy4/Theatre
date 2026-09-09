@@ -15,6 +15,7 @@ app/.dart_tool/
 
 # IDE
 .idea/
+.vs/
 .vscode/
 *.swp
 *.swo

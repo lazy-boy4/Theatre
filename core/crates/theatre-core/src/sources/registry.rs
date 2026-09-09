@@ -13,38 +13,10 @@ use std::{collections::HashMap, sync::Arc, time::Duration};
 use tokio::time::timeout;
 
 const SEARCH_TIMEOUT_SECS: u64 = 8;
-const CACHE_TTL_SECS: u64 = 60;
 
 pub struct SourceRegistry {
     sources: HashMap<String, Arc<dyn Source>>,
     health: Arc<HealthTracker>,
-    cache: Arc<tokio::sync::Mutex<SearchCache>>,
-}
-
-struct SearchCache {
-    entries: HashMap<String, (u64, SearchPage)>,
-}
-
-impl SearchCache {
-    fn new() -> Self {
-        Self {
-            entries: HashMap::new(),
-        }
-    }
-    fn get(&self, key: &str) -> Option<&SearchPage> {
-        let now = crate::state::now() as u64;
-        self.entries.get(key).and_then(|(t, p)| {
-            if now - t < CACHE_TTL_SECS {
-                Some(p)
-            } else {
-                None
-            }
-        })
-    }
-    fn set(&mut self, key: String, page: SearchPage) {
-        let now = crate::state::now() as u64;
-        self.entries.insert(key, (now, page));
-    }
 }
 
 impl SourceRegistry {
@@ -67,11 +39,7 @@ impl SourceRegistry {
             Arc::new(super::bdix::BdixSource::new(net.clone())),
         );
 
-        Self {
-            sources,
-            health,
-            cache: Arc::new(tokio::sync::Mutex::new(SearchCache::new())),
-        }
+        Self { sources, health }
     }
 
     /// Fan-out search — parallel, 8s per-source timeout.
@@ -81,14 +49,6 @@ impl SourceRegistry {
         query: &str,
         source_filter: Option<&[String]>,
     ) -> Result<SearchPage> {
-        let cache_key = format!("{}|{:?}", query, source_filter);
-        {
-            let cache = self.cache.lock().await;
-            if let Some(cached) = cache.get(&cache_key) {
-                return Ok(cached.clone());
-            }
-        }
-
         let enabled: Vec<Arc<dyn Source>> = self
             .sources
             .values()
@@ -166,7 +126,6 @@ impl SourceRegistry {
             has_more: false,
             partial,
         };
-        self.cache.lock().await.set(cache_key, page.clone());
         Ok(page)
     }
 

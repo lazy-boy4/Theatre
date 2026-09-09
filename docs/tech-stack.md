@@ -54,7 +54,7 @@
 | `rusqlite` | 0.40.x【turn0search11】 | SQLite state store, **`bundled` feature** | One SQLite version everywhere; WAL + `busy_timeout=5000` |
 | `serde` / `serde_json` | 1.x | Contract types, DB rows, spool manifests | — |
 | `flutter_rust_bridge` | 2.13.0 | `theatre-ffi` boundary | Codegen version locked equal |
-| `url` | 2.5.8 | Host parsing in `net/` + 4KHDHub link joins | — |
+| `url` | 2.5.8 | Host parsing in `net/` + 4KHDHub link joins | `percent-encoding` 2.x direct (url's own decoder; replaces hand-rolled codec) |
 | `hmac` / `md-5` (`md5`) / `base64` | 0.12.1 / 0.10.6 / 0.22.1 | MovieBox request signing, inherited from upstream `crypto.rs` | Upstream-inherited per §4 rule; no fallback (unsigned requests 403) |
 | `async-trait` / `async-stream` / `bytes` | 0.1.92 / 0.3.6 / 1.12.1 | `Source` trait, spool streaming, body bytes | Were undeclared-but-used; now pinned |
 | `criterion` | 0.5.1 (dev only) | `benches/core_bench.rs` | HTML reports; CI comments P50/P99 on PRs |

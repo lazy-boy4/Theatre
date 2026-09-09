@@ -6,7 +6,6 @@
 #[allow(clippy::module_inception)]
 mod tests {
     use crate::{api::types::*, error::TheatreError};
-    
 
     // ── Serialization round-trips ────────────────────────────────
     #[test]

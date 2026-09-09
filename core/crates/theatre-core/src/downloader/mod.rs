@@ -7,12 +7,13 @@ pub mod ffmpeg;
 pub mod hls;
 pub mod queue;
 
-pub use queue::{DownloadEvent, DownloadJob, DownloadQueue, JobKind, JobStatus};
+pub use queue::{DownloadJob, DownloadQueue, JobKind, JobStatus};
 
 use crate::{
     api::types::{ContentRef, ResolvedStream, StreamKind},
     error::{Result, TheatreError},
     net::NetClient,
+    sources::util::sanitize_filename,
     state::Db,
 };
 use std::{path::PathBuf, sync::Arc};
@@ -21,9 +22,6 @@ use uuid::Uuid;
 /// Main download manager — one per app lifetime.
 #[derive(Clone)]
 pub struct Downloader {
-    // Held for future queue queries (M4); queue owns the live handle today.
-    #[allow(dead_code)]
-    db: Db,
     net: NetClient,
     queue: Arc<DownloadQueue>,
     ffmpeg: Arc<ffmpeg::FfmpegSidecar>,
@@ -32,9 +30,8 @@ pub struct Downloader {
 
 impl Downloader {
     pub fn new(db: Db, net: NetClient, root: PathBuf, ffmpeg: Arc<ffmpeg::FfmpegSidecar>) -> Self {
-        let queue = Arc::new(DownloadQueue::new(db.clone()));
+        let queue = Arc::new(DownloadQueue::new(db));
         Self {
-            db,
             net,
             queue,
             ffmpeg,
@@ -92,18 +89,6 @@ impl Downloader {
         Ok(id)
     }
 
-    /// Pre-flight space check (bytes needed estimate).
-    pub fn check_space(&self, _estimated_bytes: u64, _dir: &str) -> Result<bool> {
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::MetadataExt;
-            let stat = nix_statvfs(dir).unwrap_or(u64::MAX);
-            return Ok(stat > estimated_bytes);
-        }
-        #[allow(unreachable_code)]
-        Ok(true)
-    }
-
     fn dest_dir(&self, content: &ContentRef) -> PathBuf {
         use crate::api::types::ContentKind;
         match content.kind {
@@ -126,10 +111,6 @@ impl Downloader {
                 queue.set_failed(&job.id, &e.to_string()).ok();
             }
         });
-    }
-
-    pub fn get_job(&self, id: &str) -> Result<Option<DownloadJob>> {
-        self.queue.get(id)
     }
 
     pub fn list_jobs(&self) -> Result<Vec<DownloadJob>> {
@@ -166,24 +147,4 @@ impl Downloader {
         self.spawn_job(job, stream);
         Ok(())
     }
-}
-
-fn sanitize_filename(name: &str) -> String {
-    let s: String = name
-        .chars()
-        .map(|c| {
-            if c.is_alphanumeric() || c == '.' || c == '-' || c == '_' || c == ' ' {
-                c
-            } else {
-                '_'
-            }
-        })
-        .collect();
-    format!("{}.mp4", s.trim())
-}
-
-#[cfg(unix)]
-fn nix_statvfs(path: &str) -> Option<u64> {
-    // Returns available bytes; stub — real impl uses libc::statvfs
-    None
 }

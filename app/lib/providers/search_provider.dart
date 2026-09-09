@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../api/theatre_api.dart';
+import '../ffi/bridge.dart';
 
 class SearchState {
   final String query;
@@ -17,7 +17,7 @@ class SearchNotifier extends Notifier<SearchState> {
     if (query.trim().isEmpty) { state = const SearchState(); return; }
     state = state.copyWith(query: query, page: const AsyncValue.loading());
     state = state.copyWith(
-      page: await AsyncValue.guard(() => TheatreApi.instance.search(query)),
+      page: await AsyncValue.guard(() => theatreSearch(query: query)),
     );
   }
 
@@ -25,4 +25,3 @@ class SearchNotifier extends Notifier<SearchState> {
 }
 
 final searchProvider = NotifierProvider<SearchNotifier, SearchState>(SearchNotifier.new);
-final searchQueryProvider = StateProvider<String>((ref) => '');

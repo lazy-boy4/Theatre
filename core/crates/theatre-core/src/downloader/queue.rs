@@ -6,7 +6,6 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use tokio::sync::broadcast;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -20,31 +19,6 @@ pub enum JobStatus {
     Cancelled,
 }
 
-impl JobStatus {
-    fn as_str(&self) -> &'static str {
-        match self {
-            Self::Queued => "queued",
-            Self::Preparing => "preparing",
-            Self::Running => "running",
-            Self::Paused => "paused",
-            Self::Failed => "failed",
-            Self::Done => "done",
-            Self::Cancelled => "cancelled",
-        }
-    }
-    fn from_str(s: &str) -> Self {
-        match s {
-            "preparing" => Self::Preparing,
-            "running" => Self::Running,
-            "paused" => Self::Paused,
-            "failed" => Self::Failed,
-            "done" => Self::Done,
-            "cancelled" => Self::Cancelled,
-            _ => Self::Queued,
-        }
-    }
-}
-
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum JobKind {
@@ -52,20 +26,23 @@ pub enum JobKind {
     Hls,
 }
 
-impl JobKind {
-    fn as_str(&self) -> &'static str {
-        match self {
-            Self::Direct => "direct",
-            Self::Hls => "hls",
-        }
-    }
-    fn from_str(s: &str) -> Self {
-        if s == "hls" {
-            Self::Hls
-        } else {
-            Self::Direct
-        }
-    }
+/// Persisted as plain strings via serde (`"queued"`); unknown values fall
+/// back to the queue default instead of failing the read.
+fn status_str(s: &JobStatus) -> String {
+    serde_json::to_string(s)
+        .map(|j| j.trim_matches('"').to_owned())
+        .unwrap_or_else(|_| "queued".into())
+}
+fn status_parse(s: &str) -> JobStatus {
+    serde_json::from_str(&format!("\"{s}\"")).unwrap_or(JobStatus::Queued)
+}
+fn kind_str(k: &JobKind) -> String {
+    serde_json::to_string(k)
+        .map(|j| j.trim_matches('"').to_owned())
+        .unwrap_or_else(|_| "direct".into())
+}
+fn kind_parse(s: &str) -> JobKind {
+    serde_json::from_str(&format!("\"{s}\"")).unwrap_or(JobKind::Direct)
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -93,39 +70,16 @@ pub struct DownloadJob {
     pub stream_headers: HashMap<String, String>,
 }
 
-#[derive(Debug, Clone)]
-pub enum DownloadEvent {
-    Snapshot(Vec<DownloadJob>),
-    Progress {
-        id: String,
-        bytes_done: i64,
-        total_bytes: Option<i64>,
-        segments_done: i64,
-        total_segments: Option<i64>,
-    },
-    StatusChanged {
-        id: String,
-        status: JobStatus,
-    },
-}
-
 pub struct DownloadQueue {
     db: Db,
-    tx: broadcast::Sender<DownloadEvent>,
 }
 
 impl DownloadQueue {
     pub fn new(db: Db) -> Self {
-        let (tx, _) = broadcast::channel(256);
-        Self { db, tx }
-    }
-
-    pub fn subscribe(&self) -> broadcast::Receiver<DownloadEvent> {
-        self.tx.subscribe()
+        Self { db }
     }
 
     pub fn insert(&self, job: &DownloadJob) -> Result<()> {
-        let _headers_json = serde_json::to_string(&job.stream_headers).unwrap_or_default();
         self.db.with(|c| {
             c.execute(
                 "INSERT INTO downloads(
@@ -140,9 +94,9 @@ impl DownloadQueue {
                     job.source_id,
                     job.title,
                     job.variant,
-                    job.kind.as_str(),
+                    kind_str(&job.kind),
                     job.dest_path,
-                    job.status.as_str(),
+                    status_str(&job.status),
                     job.total_bytes,
                     job.total_segments,
                     job.created_at,
@@ -221,15 +175,6 @@ impl DownloadQueue {
             )?;
             Ok(())
         })?;
-        self.tx
-            .send(DownloadEvent::Progress {
-                id: id.to_owned(),
-                bytes_done,
-                total_bytes,
-                segments_done,
-                total_segments,
-            })
-            .ok();
         Ok(())
     }
 
@@ -238,21 +183,10 @@ impl DownloadQueue {
         self.db.with(|c| {
             c.execute(
                 "UPDATE downloads SET status=?1, updated_at=?2 WHERE id=?3",
-                rusqlite::params![status.as_str(), n, id],
+                rusqlite::params![status_str(&status), n, id],
             )?;
             Ok(())
-        })?;
-        self.tx
-            .send(DownloadEvent::StatusChanged {
-                id: id.to_owned(),
-                status,
-            })
-            .ok();
-        Ok(())
-    }
-
-    pub fn set_done(&self, id: &str) -> Result<()> {
-        self.set_status(id, JobStatus::Done)
+        })
     }
 
     pub fn set_failed(&self, id: &str, reason: &str) -> Result<()> {
@@ -263,14 +197,7 @@ impl DownloadQueue {
                 rusqlite::params![reason, n, id],
             )?;
             Ok(())
-        })?;
-        self.tx
-            .send(DownloadEvent::StatusChanged {
-                id: id.to_owned(),
-                status: JobStatus::Failed,
-            })
-            .ok();
-        Ok(())
+        })
     }
 }
 
@@ -281,9 +208,9 @@ fn row_to_job(row: &rusqlite::Row<'_>) -> rusqlite::Result<DownloadJob> {
         source_id: row.get(2)?,
         title: row.get(3)?,
         variant: row.get(4)?,
-        kind: JobKind::from_str(&row.get::<_, String>(5)?),
+        kind: kind_parse(&row.get::<_, String>(5)?),
         dest_path: row.get(6)?,
-        status: JobStatus::from_str(&row.get::<_, String>(7)?),
+        status: status_parse(&row.get::<_, String>(7)?),
         bytes_done: row.get(8)?,
         total_bytes: row.get(9)?,
         segments_done: row.get(10)?,

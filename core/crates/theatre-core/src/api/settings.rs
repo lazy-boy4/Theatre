@@ -3,9 +3,9 @@
 use crate::{api::lifecycle, error::Result};
 
 pub async fn get_setting(key: String) -> Result<Option<String>> {
-    lifecycle::settings().get::<String>(&key)
+    lifecycle::state().settings.get::<String>(&key)
 }
 
 pub async fn set_setting(key: String, value: String) -> Result<()> {
-    lifecycle::settings().set(&key, &value)
+    lifecycle::state().settings.set(&key, &value)
 }

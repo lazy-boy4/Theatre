@@ -46,14 +46,13 @@ impl NetClient {
         }
     }
 
-    /// Raw handle for scraper internals that must build their own signed
-    /// requests (e.g. MovieBox HMAC headers). Prefer `get`/`get_range`.
-    pub fn raw(&self) -> &reqwest::Client {
-        &self.client
-    }
-
-    pub async fn get(&self, url: &str, headers: &HashMap<String, String>) -> Result<NetResponse> {
-        self.request(url, headers, None).await
+    pub async fn get(
+        &self,
+        url: &str,
+        headers: &HashMap<String, String>,
+    ) -> Result<reqwest::Response> {
+        let builder = apply_headers(self.client.get(url), headers);
+        self.send(builder, url).await
     }
 
     pub async fn get_range(
@@ -61,8 +60,10 @@ impl NetClient {
         url: &str,
         headers: &HashMap<String, String>,
         offset: u64,
-    ) -> Result<NetResponse> {
-        self.request(url, headers, Some(offset)).await
+    ) -> Result<reqwest::Response> {
+        let builder = apply_headers(self.client.get(url), headers)
+            .header("Range", format!("bytes={}-", offset));
+        self.send(builder, url).await
     }
 
     /// POST with a pre-encoded body string (MovieBox signed JSON calls).
@@ -72,21 +73,9 @@ impl NetClient {
         url: &str,
         headers: &HashMap<String, String>,
         body: &str,
-    ) -> Result<NetResponse> {
-        let host = host_of(url).unwrap_or_default();
-        self.politeness_wait(&host).await;
-        let mut builder = self.client.post(url).body(body.to_owned());
-        for (k, v) in headers {
-            if v.contains('\r') || v.contains('\n') {
-                continue;
-            }
-            builder = builder.header(k.as_str(), v.as_str());
-        }
-        let resp = builder.send().await.map_err(|e| TheatreError::Network {
-            detail: e.to_string(),
-        })?;
-        self.release(&host);
-        Ok(NetResponse(resp))
+    ) -> Result<reqwest::Response> {
+        let builder = apply_headers(self.client.post(url).body(body.to_owned()), headers);
+        self.send(builder, url).await
     }
 
     /// POST with a JSON body (BDIX DhakaFlix file-browser API).
@@ -95,50 +84,21 @@ impl NetClient {
         url: &str,
         headers: &HashMap<String, String>,
         body: &serde_json::Value,
-    ) -> Result<NetResponse> {
-        let host = host_of(url).unwrap_or_default();
-        self.politeness_wait(&host).await;
-        let mut builder = self.client.post(url).json(body);
-        for (k, v) in headers {
-            if v.contains('\r') || v.contains('\n') {
-                continue;
-            }
-            builder = builder.header(k.as_str(), v.as_str());
-        }
-        let resp = builder.send().await.map_err(|e| TheatreError::Network {
-            detail: e.to_string(),
-        })?;
-        self.release(&host);
-        Ok(NetResponse(resp))
+    ) -> Result<reqwest::Response> {
+        let builder = apply_headers(self.client.post(url).json(body), headers);
+        self.send(builder, url).await
     }
 
-    async fn request(
-        &self,
-        url: &str,
-        headers: &HashMap<String, String>,
-        range_offset: Option<u64>,
-    ) -> Result<NetResponse> {
-        let host = host_of(url).unwrap_or_default();
+    /// Sole send path: politeness gate, transport, slot release.
+    async fn send(&self, builder: reqwest::RequestBuilder, url: &str) -> Result<reqwest::Response> {
+        let host = host_of(url);
         self.politeness_wait(&host).await;
-
-        let mut builder = self.client.get(url);
-        for (k, v) in headers {
-            // Header injection guard: drop values with CR/LF (security test).
-            if v.contains('\r') || v.contains('\n') {
-                continue;
-            }
-            builder = builder.header(k.as_str(), v.as_str());
-        }
-        if let Some(off) = range_offset {
-            builder = builder.header("Range", format!("bytes={}-", off));
-        }
-
         let resp = builder.send().await.map_err(|e| TheatreError::Network {
             detail: e.to_string(),
         })?;
         // Headers received — free the concurrency slot (body streams after).
         self.release(&host);
-        Ok(NetResponse(resp))
+        Ok(resp)
     }
 
     /// Enforce max-2-concurrent + 500ms min interval per host.
@@ -179,49 +139,23 @@ impl NetClient {
     }
 }
 
-/// Thin wrapper so callers never touch reqwest types directly.
-pub struct NetResponse(reqwest::Response);
-
-impl NetResponse {
-    pub async fn text(self) -> std::result::Result<String, reqwest::Error> {
-        self.0.text().await
+/// Attach headers, dropping CR/LF-injected values (security: header guard).
+fn apply_headers(
+    mut builder: reqwest::RequestBuilder,
+    headers: &HashMap<String, String>,
+) -> reqwest::RequestBuilder {
+    for (k, v) in headers {
+        if v.contains('\r') || v.contains('\n') {
+            continue;
+        }
+        builder = builder.header(k.as_str(), v.as_str());
     }
-
-    pub async fn bytes(self) -> std::result::Result<bytes::Bytes, reqwest::Error> {
-        self.0.bytes().await
-    }
-
-    pub async fn json<T: serde::de::DeserializeOwned>(
-        self,
-    ) -> std::result::Result<T, reqwest::Error> {
-        self.0.json().await
-    }
-
-    pub fn bytes_stream(
-        self,
-    ) -> impl futures::Stream<Item = std::result::Result<bytes::Bytes, reqwest::Error>> {
-        
-        self.0.bytes_stream()
-    }
-
-    pub fn status(&self) -> reqwest::StatusCode {
-        self.0.status()
-    }
-
-    pub fn content_length(&self) -> Option<u64> {
-        self.0.content_length()
-    }
-
-    pub fn headers(&self) -> &reqwest::header::HeaderMap {
-        self.0.headers()
-    }
-
-    pub fn url(&self) -> &reqwest::Url {
-        self.0.url()
-    }
+    builder
 }
 
-fn host_of(url: &str) -> Option<String> {
-    let after_scheme = url.split("://").nth(1)?;
-    Some(after_scheme.split('/').next()?.to_owned())
+fn host_of(url: &str) -> String {
+    url::Url::parse(url)
+        .ok()
+        .and_then(|u| u.host_str().map(|h| h.to_owned()))
+        .unwrap_or_default()
 }

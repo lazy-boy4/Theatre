@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../providers/history_provider.dart';
-import '../api/theatre_api.dart';
+import '../ffi/bridge.dart';
 
 class HistoryScreen extends ConsumerWidget {
   const HistoryScreen({super.key});
@@ -58,7 +58,7 @@ class HistoryScreen extends ConsumerWidget {
     if (ok == true) {
       final entries = ref.read(allHistoryProvider).value ?? [];
       for (final e in entries) {
-        await TheatreApi.instance.deleteHistory(e.id);
+        await theatreDeleteHistory(id: e.id);
       }
       ref.invalidate(allHistoryProvider);
       ref.invalidate(continueWatchingProvider);
@@ -89,7 +89,7 @@ class _HistoryTile extends StatelessWidget {
         child: const Icon(Icons.delete, color: Colors.white),
       ),
       onDismissed: (_) async {
-        await TheatreApi.instance.deleteHistory(entry.id);
+        await theatreDeleteHistory(id: entry.id);
         ref.invalidate(allHistoryProvider);
         ref.invalidate(continueWatchingProvider);
       },

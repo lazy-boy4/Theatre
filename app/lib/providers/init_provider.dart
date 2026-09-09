@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
-import '../api/theatre_api.dart';
+import '../ffi/bridge.dart';
 
 final initProvider = FutureProvider<InitResult>((ref) async {
   final dir = await getApplicationSupportDirectory();
@@ -9,5 +9,5 @@ final initProvider = FutureProvider<InitResult>((ref) async {
     appVersion: '0.1.0',
     proxyEnabled: true,
   );
-  return TheatreApi.instance.init(config);
+  return theatreInit(config);
 });

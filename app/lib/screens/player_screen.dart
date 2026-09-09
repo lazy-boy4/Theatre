@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
-import '../api/theatre_api.dart';
+import '../ffi/bridge.dart';
 
 class PlayerScreen extends ConsumerStatefulWidget {
   final ResolvedStream stream;
@@ -51,7 +51,7 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
   }
 
   void _saveProgress(int seconds) {
-    TheatreApi.instance.recordPlayback(HistoryEntry(
+    theatreRecordPlayback(entry: HistoryEntry(
       id: '${widget.content.source}-${widget.content.contentId}',
       sourceId: widget.content.source,
       contentId: widget.content.contentId,

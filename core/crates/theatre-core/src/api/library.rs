@@ -7,7 +7,7 @@ use crate::{
 };
 
 pub async fn list_library_locations() -> Result<Vec<LibraryLocation>> {
-    lifecycle::library().list_locations()
+    lifecycle::state().library.list_locations()
 }
 
 pub async fn add_library_location(
@@ -20,11 +20,13 @@ pub async fn add_library_location(
     } else {
         LocationKind::Filesystem
     };
-    lifecycle::library().add_location(&path, kind, label.as_deref())
+    lifecycle::state()
+        .library
+        .add_location(&path, kind, label.as_deref())
 }
 
 pub async fn remove_library_location(id: String) -> Result<()> {
-    lifecycle::library().remove_location(&id)
+    lifecycle::state().library.remove_location(&id)
 }
 
 pub async fn browse_folder(path: String) -> Result<Vec<MediaEntry>> {

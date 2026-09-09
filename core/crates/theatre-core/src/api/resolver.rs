@@ -10,7 +10,8 @@ pub async fn resolve(
     variant: Option<String>,
     force_refresh: bool,
 ) -> Result<ResolvedStream> {
-    lifecycle::sources()
+    lifecycle::state()
+        .sources
         .resolve(&content, variant.as_deref(), force_refresh)
         .await
 }

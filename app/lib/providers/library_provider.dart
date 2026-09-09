@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../api/theatre_api.dart';
+import '../ffi/bridge.dart';
 
 final libraryLocationsProvider = FutureProvider<List<LibraryLocation>>(
-  (ref) => TheatreApi.instance.listLocations(),
+  (ref) => theatreListLocations(),
 );
 
 final browseFolderProvider = FutureProviderFamily<List<MediaEntry>, String>(
-  (ref, path) => TheatreApi.instance.browseFolder(path),
+  (ref, path) => theatreBrowseFolder(path: path),
 );

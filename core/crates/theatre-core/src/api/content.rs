@@ -7,15 +7,15 @@ use crate::{
 
 pub async fn search(query: String, source_filter: Option<Vec<String>>) -> Result<SearchPage> {
     let filter = source_filter.as_deref();
-    lifecycle::sources().search(&query, filter).await
+    lifecycle::state().sources.search(&query, filter).await
 }
 
 pub async fn get_details(content: ContentRef) -> Result<Details> {
-    lifecycle::sources().get_details(&content).await
+    lifecycle::state().sources.get_details(&content).await
 }
 
 pub async fn list_sources() -> Result<Vec<SourceInfo>> {
-    Ok(lifecycle::sources().list_sources())
+    Ok(lifecycle::state().sources.list_sources())
 }
 
 pub async fn set_source_enabled(id: String, _enabled: bool) -> Result<SourceInfo> {

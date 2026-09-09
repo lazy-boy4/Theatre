@@ -1,10 +1,7 @@
 //! Axum-based loopback proxy server — architecture §9.
 
 use super::session::ProxySessionStore;
-use crate::{
-    error::Result,
-    net::NetClient,
-};
+use crate::{error::Result, net::NetClient};
 use axum::{
     body::Body,
     extract::{Path, State},
@@ -28,8 +25,7 @@ struct AppState {
 struct JobInfo {
     url: String,
     headers: std::collections::HashMap<String, String>,
-    kind: String,          // "direct" | "hls"
-    spool: Option<String>, // path for hls spool file
+    kind: String, // "direct" only (HLS spool arrives at M5)
 }
 
 pub struct ProxyServer {
@@ -77,7 +73,6 @@ impl ProxyServer {
         url: String,
         headers: std::collections::HashMap<String, String>,
         kind: &str,
-        spool: Option<String>,
     ) {
         let mut jobs = self.state.jobs.write().await;
         jobs.insert(
@@ -86,7 +81,6 @@ impl ProxyServer {
                 url,
                 headers,
                 kind: kind.to_owned(),
-                spool,
             },
         );
     }
@@ -140,7 +134,7 @@ async fn handle_download(
 
     match job.kind.as_str() {
         "direct" => serve_direct(&state.net, &job, range, session_id, state.sessions.clone()).await,
-        "hls" => serve_spool(job, range, session_id, state.sessions.clone()).await,
+        // HLS spool serving arrives at M5; reject anything else.
         _ => Response::builder()
             .status(StatusCode::BAD_REQUEST)
             .body(Body::empty())
@@ -192,46 +186,6 @@ async fn serve_direct(
                 .status(502)
                 .body(Body::from(e.to_string()))
                 .unwrap()
-        }
-    }
-}
-
-async fn serve_spool(
-    job: JobInfo,
-    range: Option<String>,
-    sess_id: String,
-    sessions: Arc<ProxySessionStore>,
-) -> Response<Body> {
-    let spool_path = match &job.spool {
-        Some(p) => p.clone(),
-        None => {
-            sessions.end_session(&sess_id);
-            return Response::builder().status(404).body(Body::empty()).unwrap();
-        }
-    };
-
-    let offset: u64 = range
-        .as_deref()
-        .and_then(|r| r.strip_prefix("bytes="))
-        .and_then(|r| r.split('-').next())
-        .and_then(|n| n.parse().ok())
-        .unwrap_or(0);
-
-    // Serve whatever is spooled so far; block on unavailable bytes
-    match super::spool::serve_spool_range(&spool_path, offset).await {
-        Ok(stream) => {
-            sessions.end_session(&sess_id);
-            let status = if offset > 0 { 206 } else { 200 };
-            Response::builder()
-                .status(status)
-                .header("content-type", "video/mp4")
-                .header("accept-ranges", "bytes")
-                .body(Body::from_stream(stream))
-                .unwrap()
-        }
-        Err(_) => {
-            sessions.end_session(&sess_id);
-            Response::builder().status(500).body(Body::empty()).unwrap()
         }
     }
 }

@@ -6,11 +6,11 @@
 //! Ported from upstream `src/providers/bdix/{circleftp,dhakaflix}`.
 //! data-contract.md §3.1/§3.2/§3.3/§4.1.
 
+use super::util::{detect_quality, extract_year, quality_rank, sanitize_filename};
 use crate::{
     api::types::*,
     error::{Result, TheatreError},
     net::NetClient,
-    state,
 };
 use async_trait::async_trait;
 use std::collections::HashMap;
@@ -155,7 +155,9 @@ impl BdixSource {
                     title,
                     year,
                     poster_url: None,
-                    quality_badges: quality_of(&decoded).map(|q| vec![q]).unwrap_or_default(),
+                    quality_badges: detect_quality(&decoded)
+                        .map(|q| vec![q])
+                        .unwrap_or_default(),
                 });
             }
         }
@@ -164,9 +166,7 @@ impl BdixSource {
         for r in out {
             let key = (r.title.to_lowercase(), r.year);
             match best.get(&key) {
-                Some(e)
-                    if quality_rank_opt(&e.quality_badges)
-                        >= quality_rank_opt(&r.quality_badges) => {}
+                Some(e) if badge_rank(&e.quality_badges) >= badge_rank(&r.quality_badges) => {}
                 _ => {
                     best.insert(key, r);
                 }
@@ -223,7 +223,8 @@ impl BdixSource {
         match best {
             Some((link, _)) => {
                 let title = percent_decode(
-                    path.split('/').rfind(|p| !p.is_empty())
+                    path.split('/')
+                        .rfind(|p| !p.is_empty())
                         .unwrap_or("BDIX video"),
                 );
                 Ok(direct_stream(&link, &title, None))
@@ -271,7 +272,7 @@ impl BdixSource {
                 if let Some(n) = v.as_u64() {
                     Some(n as u16)
                 } else {
-                    v.as_str().and_then(first_year)
+                    v.as_str().and_then(extract_year)
                 }
             });
             let poster_url = p
@@ -324,7 +325,7 @@ impl BdixSource {
                 if let Some(n) = v.as_u64() {
                     Some(n as u16)
                 } else {
-                    v.as_str().and_then(first_year)
+                    v.as_str().and_then(extract_year)
                 }
             })
             .or(year_from_title);
@@ -412,41 +413,9 @@ fn direct_stream(url: &str, title: &str, size: Option<u64>) -> ResolvedStream {
         kind: StreamKind::Direct,
         variants: vec![],
         selected_variant: None,
-        filename_hint: Some(sanitize(title)),
+        filename_hint: Some(sanitize_filename(title)),
         size_bytes: size,
     }
-}
-
-fn sanitize(name: &str) -> String {
-    let s: String = name
-        .chars()
-        .map(|c| {
-            if c.is_alphanumeric() || c == '.' || c == '-' || c == '_' || c == ' ' {
-                c
-            } else {
-                '_'
-            }
-        })
-        .collect();
-    format!("{}.mp4", s.trim())
-}
-
-fn first_year(s: &str) -> Option<u16> {
-    let b = s.as_bytes();
-    for i in 0..b.len().saturating_sub(3) {
-        if b[i].is_ascii_digit()
-            && b[i + 1].is_ascii_digit()
-            && b[i + 2].is_ascii_digit()
-            && b[i + 3].is_ascii_digit()
-        {
-            if let Ok(y) = s[i..i + 4].parse::<u16>() {
-                if (1900..=2100).contains(&y) {
-                    return Some(y);
-                }
-            }
-        }
-    }
-    None
 }
 
 /// Split "Title (2010)" / "Title 1080p" noise → (clean title, year?).
@@ -470,76 +439,21 @@ fn split_title_year(raw: &str) -> (String, Option<u16>) {
             break;
         }
     }
-    (title, year.or_else(|| first_year(raw)))
+    (title, year.or_else(|| extract_year(raw)))
 }
 
-fn quality_of(name: &str) -> Option<String> {
-    let l = name.to_ascii_lowercase();
-    if l.contains("2160p") || l.contains(" 4k") {
-        Some("4K".into())
-    } else if l.contains("1080p") {
-        Some("1080p".into())
-    } else if l.contains("720p") {
-        Some("720p".into())
-    } else {
-        None
-    }
-}
-
-fn quality_rank(name: &str) -> u32 {
-    quality_of(name)
-        .map(|q| match q.as_str() {
-            "4K" => 3,
-            "1080p" => 2,
-            "720p" => 1,
-            _ => 0,
-        })
-        .unwrap_or(0)
-}
-
-fn quality_rank_opt(badges: &[String]) -> u32 {
+fn badge_rank(badges: &[String]) -> u32 {
     badges.first().map(|q| quality_rank(q)).unwrap_or(0)
 }
 
 fn percent_decode(s: &str) -> String {
-    let mut out = Vec::with_capacity(s.len());
-    let b = s.as_bytes();
-    let mut i = 0;
-    while i < b.len() {
-        if b[i] == b'%' && i + 2 < b.len() {
-            if let (Some(h), Some(l)) = (hex(b[i + 1]), hex(b[i + 2])) {
-                out.push(h << 4 | l);
-                i += 3;
-                continue;
-            }
-        }
-        out.push(b[i]);
-        i += 1;
-    }
-    String::from_utf8_lossy(&out).into_owned()
+    percent_encoding::percent_decode_str(s)
+        .decode_utf8_lossy()
+        .into_owned()
 }
 
-fn hex(c: u8) -> Option<u8> {
-    match c {
-        b'0'..=b'9' => Some(c - b'0'),
-        b'a'..=b'f' => Some(c - b'a' + 10),
-        b'A'..=b'F' => Some(c - b'A' + 10),
-        _ => None,
-    }
-}
-
-fn url_encode(s: &str) -> String {
-    let mut o = String::new();
-    for b in s.bytes() {
-        if b.is_ascii_alphanumeric() || b"-_.~".contains(&b) {
-            o.push(b as char);
-        } else if b == b' ' {
-            o.push('+');
-        } else {
-            o.push_str(&format!("%{:02X}", b));
-        }
-    }
-    o
+fn url_encode(query: &str) -> String {
+    url::form_urlencoded::byte_serialize(query.as_bytes()).collect()
 }
 
 fn split_id(content_id: &str) -> (u8, String) {
@@ -592,7 +506,8 @@ impl super::Source for BdixSource {
                 // dflix:<base>::<path> → lightweight details from path name.
                 let (base, path) = rest.split_once("::").unwrap_or(("", &rest));
                 let name = path
-                    .split('/').rfind(|p| !p.is_empty())
+                    .split('/')
+                    .rfind(|p| !p.is_empty())
                     .unwrap_or("BDIX video");
                 let (title, year) = split_title_year(&percent_decode(name));
                 Ok(Details {
@@ -671,28 +586,6 @@ impl super::Source for BdixSource {
                 }
                 self.circle_resolve(post_id).await
             }
-        }
-    }
-
-    async fn health_check(&self) -> SourceStatus {
-        match self
-            .net
-            .get(
-                &format!("{}/posts?searchTerm=test&order=desc", CIRCLE_BASE),
-                &Self::headers(),
-            )
-            .await
-        {
-            Ok(r) if r.status().is_success() => SourceStatus::Healthy,
-            Ok(r) => SourceStatus::Degraded {
-                since: state::now() as u64,
-                last_error: format!("circleftp HTTP {}", r.status().as_u16()),
-            },
-            Err(e) => SourceStatus::Degraded {
-                since: state::now() as u64,
-                // Geo/ISP-locked source (PRD §8): explanatory, not generic.
-                last_error: format!("BDIX unreachable (likely outside coverage): {}", e),
-            },
         }
     }
 }

@@ -12,7 +12,8 @@ import 'api.dart' as frb;
 import '../api/types.dart';
 export '../api/types.dart';
 
-Map<String, dynamic> _decode(String json) => jsonDecode(json) as Map<String, dynamic>;
+Map<String, dynamic> _decode(String json) =>
+    jsonDecode(json) as Map<String, dynamic>;
 List<dynamic> _decodeList(String json) => jsonDecode(json) as List<dynamic>;
 
 // Lifecycle
@@ -24,19 +25,29 @@ Future<InitResult> theatreInit(InitConfig config) async {
 Future<void> theatreShutdown() => frb.theatreShutdown();
 
 // Search
-Future<SearchPage> theatreSearch({required String query, List<String>? sourceFilter}) async {
-  final json = await frb.theatreSearch(query: query, sourceFilter: sourceFilter);
+Future<SearchPage> theatreSearch({
+  required String query,
+  List<String>? sourceFilter,
+}) async {
+  final json = await frb.theatreSearch(
+    query: query,
+    sourceFilter: sourceFilter,
+  );
   return SearchPage.fromJson(_decode(json));
 }
 
 Future<Details> theatreGetDetails({required ContentRef content}) async {
-  final json = await frb.theatreGetDetails(contentJson: jsonEncode(content.toJson()));
+  final json = await frb.theatreGetDetails(
+    contentJson: jsonEncode(content.toJson()),
+  );
   return _detailsFromRust(_decode(json));
 }
 
 Future<List<SourceInfo>> theatreListSources() async {
   final json = await frb.theatreListSources();
-  return _decodeList(json).map((e) => _sourceInfoFromRust(e as Map<String, dynamic>)).toList();
+  return _decodeList(
+    json,
+  ).map((e) => _sourceInfoFromRust(e as Map<String, dynamic>)).toList();
 }
 
 SourceInfo _sourceInfoFromRust(Map<String, dynamic> j) {
@@ -62,16 +73,18 @@ Details _detailsFromRust(Map<String, dynamic> j) {
       final em = e as Map<String, dynamic>;
       final epNum = (em['number'] as num).toInt();
       final content = em['content'] as Map<String, dynamic>;
-      episodes.add(Episode(
-        content: ContentRef(
-          source: content['source'] as String,
-          contentId: content['contentId'] as String,
-          kind: ContentKind.episode,
+      episodes.add(
+        Episode(
+          content: ContentRef(
+            source: content['source'] as String,
+            contentId: content['contentId'] as String,
+            kind: ContentKind.episode,
+          ),
+          season: seasonNum,
+          episode: epNum,
+          title: (em['title'] as String?) ?? 'Episode $epNum',
         ),
-        season: seasonNum,
-        episode: epNum,
-        title: (em['title'] as String?) ?? 'Episode $epNum',
-      ));
+      );
     }
   }
   final content = j['content'] as Map<String, dynamic>;
@@ -107,22 +120,26 @@ Future<String> theatreEnqueueDownload({
   required ResolvedStream stream,
   required String title,
   String? variant,
-}) =>
-    frb.theatreEnqueueDownload(
-      contentJson: jsonEncode(content.toJson()),
-      streamJson: jsonEncode(stream.toJson()),
-      title: title,
-      variant: variant,
-    );
+}) => frb.theatreEnqueueDownload(
+  contentJson: jsonEncode(content.toJson()),
+  streamJson: jsonEncode(stream.toJson()),
+  title: title,
+  variant: variant,
+);
 
 Future<List<DownloadJob>> theatreListDownloads() async {
   final json = await frb.theatreListDownloads();
-  return _decodeList(json).map((e) => DownloadJob.fromJson(e as Map<String, dynamic>)).toList();
+  return _decodeList(
+    json,
+  ).map((e) => DownloadJob.fromJson(e as Map<String, dynamic>)).toList();
 }
 
-Future<void> theatrePauseDownload({required String id}) => frb.theatrePauseDownload(id: id);
-Future<void> theatreCancelDownload({required String id}) => frb.theatreCancelDownload(id: id);
-Future<void> theatreResumeDownload({required String id}) => frb.theatreResumeDownload(id: id);
+Future<void> theatrePauseDownload({required String id}) =>
+    frb.theatrePauseDownload(id: id);
+Future<void> theatreCancelDownload({required String id}) =>
+    frb.theatreCancelDownload(id: id);
+Future<void> theatreResumeDownload({required String id}) =>
+    frb.theatreResumeDownload(id: id);
 
 // History
 Future<void> theatreRecordPlayback({required HistoryEntry entry}) =>
@@ -130,35 +147,57 @@ Future<void> theatreRecordPlayback({required HistoryEntry entry}) =>
 
 Future<List<HistoryEntry>> theatreContinueWatching({required int limit}) async {
   final json = await frb.theatreContinueWatching(limit: limit);
-  return _decodeList(json).map((e) => HistoryEntry.fromJson(e as Map<String, dynamic>)).toList();
+  return _decodeList(
+    json,
+  ).map((e) => HistoryEntry.fromJson(e as Map<String, dynamic>)).toList();
 }
 
-Future<List<HistoryEntry>> theatreAllHistory({required int limit, required int offset}) async {
+Future<List<HistoryEntry>> theatreAllHistory({
+  required int limit,
+  int offset = 0,
+}) async {
   final json = await frb.theatreAllHistory(limit: limit, offset: offset);
-  return _decodeList(json).map((e) => HistoryEntry.fromJson(e as Map<String, dynamic>)).toList();
+  return _decodeList(
+    json,
+  ).map((e) => HistoryEntry.fromJson(e as Map<String, dynamic>)).toList();
 }
 
-Future<void> theatreDeleteHistory({required String id}) => frb.theatreDeleteHistory(id: id);
+Future<void> theatreDeleteHistory({required String id}) =>
+    frb.theatreDeleteHistory(id: id);
 
 // Library
 Future<List<LibraryLocation>> theatreListLocations() async {
   final json = await frb.theatreListLocations();
-  return _decodeList(json).map((e) => LibraryLocation.fromJson(e as Map<String, dynamic>)).toList();
+  return _decodeList(
+    json,
+  ).map((e) => LibraryLocation.fromJson(e as Map<String, dynamic>)).toList();
 }
 
-Future<LibraryLocation> theatreAddLocation({required String path, String? label, bool isSaf = false}) async {
-  final json = await frb.theatreAddLocation(path: path, label: label, isSaf: isSaf);
+Future<LibraryLocation> theatreAddLocation({
+  required String path,
+  String? label,
+  bool isSaf = false,
+}) async {
+  final json = await frb.theatreAddLocation(
+    path: path,
+    label: label,
+    isSaf: isSaf,
+  );
   return LibraryLocation.fromJson(_decode(json));
 }
 
-Future<void> theatreRemoveLocation({required String id}) => frb.theatreRemoveLocation(id: id);
+Future<void> theatreRemoveLocation({required String id}) =>
+    frb.theatreRemoveLocation(id: id);
 
 Future<List<MediaEntry>> theatreBrowseFolder({required String path}) async {
   final json = await frb.theatreBrowseFolder(path: path);
-  return _decodeList(json).map((e) => MediaEntry.fromJson(e as Map<String, dynamic>)).toList();
+  return _decodeList(
+    json,
+  ).map((e) => MediaEntry.fromJson(e as Map<String, dynamic>)).toList();
 }
 
 // Settings
-Future<String?> theatreGetSetting({required String key}) => frb.theatreGetSetting(key: key);
+Future<String?> theatreGetSetting({required String key}) =>
+    frb.theatreGetSetting(key: key);
 Future<void> theatreSetSetting({required String key, required String value}) =>
     frb.theatreSetSetting(key: key, value: value);

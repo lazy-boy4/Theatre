@@ -19,42 +19,31 @@ use std::{
 };
 
 /// Global app state — set once at init.
-struct AppState {
-    db: Db,
-    settings: Arc<Settings>,
-    history: Arc<History>,
-    library: Arc<Library>,
-    sources: Arc<SourceRegistry>,
-    downloader: Arc<Downloader>,
-    subtitles: Arc<SubtitleManager>,
-    proxy_port: Option<u16>,
+pub(crate) struct AppState {
+    pub(crate) db: Db,
+    pub(crate) settings: Arc<Settings>,
+    pub(crate) history: Arc<History>,
+    pub(crate) library: Arc<Library>,
+    pub(crate) sources: Arc<SourceRegistry>,
+    pub(crate) downloader: Arc<Downloader>,
+    pub(crate) subtitles: Arc<SubtitleManager>,
+    pub(crate) proxy_port: Option<u16>,
 }
 
 static STATE: OnceLock<AppState> = OnceLock::new();
 
-pub fn state_db() -> &'static Db {
-    &STATE.get().unwrap().db
+/// Sole accessor — callers drill into the field they need.
+pub(crate) fn state() -> &'static AppState {
+    STATE.get().expect("theatre core not initialized")
 }
-pub fn settings() -> &'static Arc<Settings> {
-    &STATE.get().unwrap().settings
-}
-pub fn history() -> &'static Arc<History> {
-    &STATE.get().unwrap().history
-}
-pub fn library() -> &'static Arc<Library> {
-    &STATE.get().unwrap().library
-}
-pub fn sources() -> &'static Arc<SourceRegistry> {
-    &STATE.get().unwrap().sources
-}
-pub fn downloader() -> &'static Arc<Downloader> {
-    &STATE.get().unwrap().downloader
-}
-pub fn subtitles() -> &'static Arc<SubtitleManager> {
-    &STATE.get().unwrap().subtitles
-}
-pub fn proxy_port() -> Option<u16> {
-    STATE.get().and_then(|s| s.proxy_port)
+
+fn init_result(data_dir: &str, proxy_port: Option<u16>) -> InitResult {
+    InitResult {
+        db_path: format!("{}/theatre.db", data_dir.trim_end_matches('/')),
+        proxy_port,
+        core_version: env!("CARGO_PKG_VERSION").to_owned(),
+        contract_version: "1.0.0".to_owned(),
+    }
 }
 
 /// Initialize the core. Idempotent — safe to call twice.
@@ -62,12 +51,10 @@ pub fn proxy_port() -> Option<u16> {
 pub async fn init(config: InitConfig) -> Result<InitResult> {
     if STATE.get().is_some() {
         // Already initialized — return existing result
-        return Ok(InitResult {
-            db_path: format!("{}/theatre.db", config.data_dir),
-            proxy_port: proxy_port(),
-            core_version: env!("CARGO_PKG_VERSION").to_owned(),
-            contract_version: "1.0.0".to_owned(),
-        });
+        return Ok(init_result(
+            &config.data_dir,
+            STATE.get().and_then(|s| s.proxy_port),
+        ));
     }
 
     // Open database
@@ -113,7 +100,7 @@ pub async fn init(config: InitConfig) -> Result<InitResult> {
 
     // Proxy (if enabled)
     let proxy_port = if config.proxy_enabled {
-        match proxy::start(db.clone(), net.clone()).await {
+        match proxy::start(net.clone()).await {
             Ok((_, port)) => Some(port),
             Err(e) => {
                 eprintln!("[theatre] proxy start failed: {}", e);
@@ -136,12 +123,7 @@ pub async fn init(config: InitConfig) -> Result<InitResult> {
     };
     STATE.set(state).ok(); // ok() because OnceLock ignores second set
 
-    Ok(InitResult {
-        db_path: db_path.to_string_lossy().into_owned(),
-        proxy_port,
-        core_version: env!("CARGO_PKG_VERSION").to_owned(),
-        contract_version: "1.0.0".to_owned(),
-    })
+    Ok(init_result(&config.data_dir, proxy_port))
 }
 
 /// Graceful shutdown — data-contract.md §2.2

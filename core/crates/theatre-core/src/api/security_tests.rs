@@ -11,18 +11,18 @@
 #[cfg(test)]
 #[allow(clippy::module_inception)]
 mod security_tests {
-    use crate::{proxy::session::ProxySessionStore, state::Db};
+    use crate::proxy::session::ProxySessionStore;
     use std::sync::Arc;
 
-    fn make_db() -> Db {
+    fn make_db() -> crate::state::Db {
         let dir = tempfile::tempdir().unwrap();
-        Db::open(dir.path().join("sec_test.db")).unwrap()
+        crate::state::Db::open(dir.path().join("sec_test.db")).unwrap()
     }
 
     // ─ 1. Proxy token validation ───────────────────────────────
     #[test]
     fn proxy_rejects_wrong_token() {
-        let store = ProxySessionStore::new(make_db());
+        let store = ProxySessionStore::new();
         let correct = store.token().as_str().to_owned();
         assert!(store.validate_token(&correct), "correct token must pass");
         assert!(!store.validate_token("wrong"), "wrong token must fail");
@@ -32,9 +32,8 @@ mod security_tests {
 
     #[test]
     fn proxy_tokens_differ_across_instances() {
-        let db = make_db();
-        let s1 = ProxySessionStore::new(db.clone());
-        let s2 = ProxySessionStore::new(db);
+        let s1 = ProxySessionStore::new();
+        let s2 = ProxySessionStore::new();
         // Each process launch produces a different token
         assert_ne!(s1.token().as_str(), s2.token().as_str());
     }
@@ -137,25 +136,24 @@ mod security_tests {
     // ─ 6. HLS segment URL validation ────────────────────────
     #[test]
     fn hls_resolve_url_rejects_file_scheme() {
-        // Segments from untrusted playlists must not be able to reference
-        // local files via file:// URLs.
-        let url = "file:///etc/passwd";
-        let is_file = url.starts_with("file://");
-        assert!(is_file, "detection works");
-        // In production, fetch_segment_with_retry would be guarded by a
-        // URL scheme allowlist (http/https only).
+        // Segments from untrusted playlists must not reference local files.
+        let base = url::Url::parse("https://cdn.example.com/hls/index.m3u8").unwrap();
+        assert!(crate::downloader::hls::resolve_segment_url(&base, "file:///etc/passwd").is_err());
+        assert!(crate::downloader::hls::resolve_segment_url(&base, "data:text/plain,hi").is_err());
+        let ok = crate::downloader::hls::resolve_segment_url(&base, "seg001.ts").unwrap();
+        assert_eq!(ok.as_str(), "https://cdn.example.com/hls/seg001.ts");
+        let abs =
+            crate::downloader::hls::resolve_segment_url(&base, "https://other.test/a.ts").unwrap();
+        assert_eq!(abs.host_str(), Some("other.test"));
     }
 
     // ─ 7. Download path confinement ────────────────────────
     #[test]
     fn filename_sanitisation_strips_traversal() {
-        // Ensures Content-Disposition filenames with path separators are sanitized.
-        let evil = "../../../etc/passwd";
-        let sanitized: String = evil
-            .chars()
-            .map(|c| if c == '/' || c == '\\' { '_' } else { c })
-            .collect();
-        assert!(!sanitized.contains('/'));
-        assert!(!sanitized.contains('\\'));
+        // The real sanitizer used for download destinations.
+        let clean = crate::sources::util::sanitize_filename("../../../etc/passwd");
+        assert!(!clean.contains('/'));
+        assert!(!clean.contains('\\'));
+        assert!(clean.ends_with(".mp4"));
     }
 }

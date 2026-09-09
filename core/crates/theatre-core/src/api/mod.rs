@@ -9,12 +9,10 @@ pub mod downloader;
 pub mod history;
 pub mod library;
 pub mod lifecycle;
-pub mod proxy;
 pub mod resolver;
 #[cfg(test)]
 mod security_tests;
 pub mod settings;
-pub mod subtitles;
 #[cfg(test)]
 mod tests;
 pub mod types;

@@ -129,7 +129,7 @@ pub async fn download_hls(
 
     // 3. Cleanup spool
     tokio::fs::remove_file(&spool_path).await.ok();
-    queue.set_done(&job.id)?;
+    queue.set_status(&job.id, JobStatus::Done)?;
     Ok(())
 }
 
@@ -142,7 +142,9 @@ async fn fetch_segment_urls(
     let text = resp.text().await.map_err(|e| TheatreError::Network {
         detail: e.to_string(),
     })?;
-    let base = base_url(url);
+    let base = url::Url::parse(url).map_err(|e| TheatreError::Network {
+        detail: format!("bad playlist url: {}", e),
+    })?;
     let mut segments = Vec::new();
 
     for line in text.lines() {
@@ -150,14 +152,29 @@ async fn fetch_segment_urls(
         if line.is_empty() || line.starts_with('#') {
             continue;
         }
+        let seg = resolve_segment_url(&base, line)?;
+        let seg = seg.to_string();
         // If this is a sub-playlist (variant), recurse once
         if line.ends_with(".m3u8") {
-            let sub_url = resolve_url(&base, line);
-            return Box::pin(fetch_segment_urls(net, &sub_url, headers)).await;
+            return Box::pin(fetch_segment_urls(net, &seg, headers)).await;
         }
-        segments.push(resolve_url(&base, line));
+        segments.push(seg);
     }
     Ok(segments)
+}
+
+/// Join a playlist line against its base URL, enforcing the architecture
+/// invariant: HLS segments only over http(s) — never file://, data:, etc.
+pub(crate) fn resolve_segment_url(base: &url::Url, line: &str) -> Result<url::Url> {
+    let seg = base.join(line).map_err(|e| TheatreError::Network {
+        detail: format!("bad segment url: {}", e),
+    })?;
+    if seg.scheme() != "http" && seg.scheme() != "https" {
+        return Err(TheatreError::Network {
+            detail: format!("rejected non-http segment: {}", seg.scheme()),
+        });
+    }
+    Ok(seg)
 }
 
 async fn fetch_segment_with_retry(
@@ -180,22 +197,6 @@ async fn fetch_segment_with_retry(
         }
     }
     Err(last_err)
-}
-
-fn base_url(url: &str) -> String {
-    if let Some(idx) = url.rfind('/') {
-        url[..idx + 1].to_string()
-    } else {
-        url.to_string()
-    }
-}
-
-fn resolve_url(base: &str, path: &str) -> String {
-    if path.starts_with("http://") || path.starts_with("https://") {
-        path.to_string()
-    } else {
-        format!("{}{}", base, path)
-    }
 }
 
 fn is_paused(queue: &Arc<DownloadQueue>, id: &str) -> bool {

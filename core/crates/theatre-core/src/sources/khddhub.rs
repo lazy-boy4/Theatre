@@ -5,11 +5,11 @@
 //! first media link — upstream's full drive-page dance is out of scope).
 //! data-contract.md §3.1/§3.2/§4.1.
 
+use super::util::{detect_quality, extract_year, quality_rank};
 use crate::{
     api::types::*,
     error::{Result, TheatreError},
     net::NetClient,
-    state,
 };
 use async_trait::async_trait;
 use scraper::{Html, Selector};
@@ -121,7 +121,7 @@ impl KhddhubSource {
                     },
                 },
                 title,
-                year: first_year(&meta),
+                year: extract_year(&meta),
                 poster_url: node
                     .select(&img_sel)
                     .next()
@@ -167,8 +167,8 @@ impl KhddhubSource {
             .unwrap_or_default();
         let year = find_metadata(&doc, "Release:")
             .as_deref()
-            .and_then(first_year)
-            .or_else(|| first_year(&raw));
+            .and_then(extract_year)
+            .or_else(|| extract_year(&raw));
         let cast = find_metadata(&doc, "Stars:")
             .map(|s| split_list(&s))
             .unwrap_or_default();
@@ -264,7 +264,7 @@ impl KhddhubSource {
                     if !href.starts_with("https://") || href.contains("logout") {
                         continue;
                     }
-                    mirrors.push((text_of(link).or("Source"), href.to_owned()));
+                    mirrors.push((non_empty_or(text_of(link), "Source"), href.to_owned()));
                 }
             }
             if mirrors.is_empty() {
@@ -341,35 +341,12 @@ fn text_of(n: scraper::ElementRef<'_>) -> String {
         .join(" ")
 }
 
-trait OrLabel {
-    fn or(self, label: &str) -> String;
-}
-impl OrLabel for String {
-    fn or(self, label: &str) -> String {
-        if self.is_empty() {
-            label.to_owned()
-        } else {
-            self
-        }
+fn non_empty_or(s: String, label: &str) -> String {
+    if s.is_empty() {
+        label.to_owned()
+    } else {
+        s
     }
-}
-
-fn first_year(s: &str) -> Option<u16> {
-    let b = s.as_bytes();
-    for i in 0..b.len().saturating_sub(3) {
-        if b[i].is_ascii_digit()
-            && b[i + 1].is_ascii_digit()
-            && b[i + 2].is_ascii_digit()
-            && b[i + 3].is_ascii_digit()
-        {
-            if let Ok(y) = s[i..i + 4].parse::<u16>() {
-                if (1900..=2100).contains(&y) {
-                    return Some(y);
-                }
-            }
-        }
-    }
-    None
 }
 
 fn strip_trailing_year(v: &str) -> String {
@@ -483,28 +460,6 @@ fn parse_size(v: &str) -> Option<u64> {
     None
 }
 
-fn detect_quality(name: &str) -> Option<String> {
-    ["2160p", "1080p", "720p", "480p"]
-        .into_iter()
-        .find(|q| name.to_ascii_lowercase().contains(q))
-        .map(|s| s.to_owned())
-}
-
-fn quality_rank(name: &str) -> u32 {
-    let l = name.to_ascii_lowercase();
-    if l.contains("2160p") {
-        4
-    } else if l.contains("1080p") {
-        3
-    } else if l.contains("720p") {
-        2
-    } else if l.contains("480p") {
-        1
-    } else {
-        0
-    }
-}
-
 fn is_archive(v: &str) -> bool {
     let l = v.to_ascii_lowercase();
     l.ends_with(".zip") || l.contains("season pack")
@@ -605,20 +560,6 @@ impl super::Source for KhddhubSource {
             detail: format!("4khdhub: {}", last_err),
             source: Some("4khdhub".into()),
         })
-    }
-
-    async fn health_check(&self) -> SourceStatus {
-        match self.net.get(&self.base, &self.headers()).await {
-            Ok(r) if r.status().is_success() => SourceStatus::Healthy,
-            Ok(r) => SourceStatus::Degraded {
-                since: state::now() as u64,
-                last_error: format!("HTTP {}", r.status().as_u16()),
-            },
-            Err(e) => SourceStatus::Degraded {
-                since: state::now() as u64,
-                last_error: e.to_string(),
-            },
-        }
     }
 }
 

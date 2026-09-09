@@ -4,14 +4,7 @@
 use crate::{error::Result, state::Db};
 use serde::{de::DeserializeOwned, Serialize};
 
-pub const KEY_SUBTITLE_LANGUAGE: &str = "subtitle_language";
 pub const KEY_DOWNLOAD_ROOT: &str = "download_root";
-pub const KEY_PLAYER_SPEED: &str = "player_speed";
-pub const KEY_PLAYER_FILL: &str = "player_fill";
-pub const KEY_SOURCES: &str = "sources_config";
-pub const KEY_PROXY_ENABLED: &str = "proxy_enabled";
-pub const KEY_DOWNLOAD_CONCURRENCY: &str = "download_concurrency";
-pub const KEY_THEME: &str = "theme";
 
 pub struct Settings(Db);
 
@@ -62,13 +55,5 @@ impl Settings {
         Ok(self
             .get::<String>(key)?
             .unwrap_or_else(|| default.to_string()))
-    }
-
-    pub fn get_bool(&self, key: &str, default: bool) -> Result<bool> {
-        Ok(self.get::<bool>(key)?.unwrap_or(default))
-    }
-
-    pub fn get_u32(&self, key: &str, default: u32) -> Result<u32> {
-        Ok(self.get::<u32>(key)?.unwrap_or(default))
     }
 }

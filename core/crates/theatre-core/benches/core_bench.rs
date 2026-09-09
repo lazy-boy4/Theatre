@@ -63,36 +63,5 @@ fn bench_history_record(c: &mut Criterion) {
     });
 }
 
-fn bench_concurrent_reads(c: &mut Criterion) {
-    use std::sync::Arc;
-    use std::thread;
-
-    let dir = tempfile::tempdir().unwrap();
-    let db = Db::open(dir.path().join("bench3.db")).unwrap();
-    let settings = Arc::new(Settings::new(db));
-    settings.set("k", &"v".to_string()).unwrap();
-
-    c.bench_function("settings_concurrent_8_readers", |b| {
-        b.iter(|| {
-            let handles: Vec<_> = (0..8)
-                .map(|_| {
-                    let s = settings.clone();
-                    thread::spawn(move || {
-                        let _: Option<String> = s.get("k").unwrap();
-                    })
-                })
-                .collect();
-            for h in handles {
-                h.join().unwrap();
-            }
-        })
-    });
-}
-
-criterion_group!(
-    benches,
-    bench_settings_rw,
-    bench_history_record,
-    bench_concurrent_reads
-);
+criterion_group!(benches, bench_settings_rw, bench_history_record);
 criterion_main!(benches);

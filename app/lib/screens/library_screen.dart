@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/library_provider.dart';
-import '../api/theatre_api.dart';
+import '../ffi/bridge.dart';
 import 'player_screen.dart';
 
 class LibraryScreen extends ConsumerStatefulWidget {
@@ -85,7 +85,7 @@ class _LocationsList extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.delete_outline, color: Colors.white38),
                 onPressed: () async {
-                  await TheatreApi.instance.removeLocation(loc.id);
+                  await theatreRemoveLocation(id: loc.id);
                   ref.invalidate(libraryLocationsProvider);
                 },
               ),

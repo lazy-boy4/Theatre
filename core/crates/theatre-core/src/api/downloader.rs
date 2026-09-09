@@ -12,21 +12,22 @@ pub async fn enqueue_download(
     title: String,
     variant: Option<String>,
 ) -> Result<String> {
-    lifecycle::downloader()
+    lifecycle::state()
+        .downloader
         .enqueue(content, stream, &title, variant)
         .await
 }
 
 pub async fn list_downloads() -> Result<Vec<DownloadJob>> {
-    lifecycle::downloader().list_jobs()
+    lifecycle::state().downloader.list_jobs()
 }
 
 pub async fn pause_download(id: String) -> Result<()> {
-    lifecycle::downloader().pause(&id)
+    lifecycle::state().downloader.pause(&id)
 }
 pub async fn cancel_download(id: String) -> Result<()> {
-    lifecycle::downloader().cancel(&id)
+    lifecycle::state().downloader.cancel(&id)
 }
 pub async fn resume_download(id: String) -> Result<()> {
-    lifecycle::downloader().resume(&id)
+    lifecycle::state().downloader.resume(&id)
 }

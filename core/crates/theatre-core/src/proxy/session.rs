@@ -1,6 +1,6 @@
 //! Proxy session management — per-app-launch token, session tracking.
 
-use crate::state::{now, Db};
+use crate::state::now;
 use rand::Rng;
 use std::collections::HashMap;
 use std::sync::Mutex;
@@ -19,11 +19,8 @@ impl LaunchToken {
     }
 }
 
-/// Proxy session tracking — persisted to SQLite.
+/// Proxy session tracking — in-memory (dies at process exit by design).
 pub struct ProxySessionStore {
-    // Reserved for session persistence (M5); tracking is in-memory today.
-    #[allow(dead_code)]
-    db: Db,
     token: LaunchToken,
     active: Mutex<HashMap<String, ActiveSession>>,
 }
@@ -35,10 +32,15 @@ struct ActiveSession {
     bytes: u64,
 }
 
+impl Default for ProxySessionStore {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ProxySessionStore {
-    pub fn new(db: Db) -> Self {
+    pub fn new() -> Self {
         Self {
-            db,
             token: LaunchToken::generate(),
             active: Mutex::new(HashMap::new()),
         }
@@ -80,10 +82,6 @@ impl ProxySessionStore {
     pub fn end_session(&self, session_id: &str) {
         let mut active = self.active.lock().unwrap();
         active.remove(session_id);
-    }
-
-    pub fn active_count(&self) -> usize {
-        self.active.lock().unwrap().len()
     }
 
     pub fn list_active(&self) -> Vec<ProxySession> {

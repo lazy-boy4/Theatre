@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../api/theatre_api.dart';
+import '../ffi/bridge.dart';
 
 class SettingsNotifier extends AsyncNotifier<Map<String, String>> {
   static const _keys = [
@@ -11,14 +11,14 @@ class SettingsNotifier extends AsyncNotifier<Map<String, String>> {
   Future<Map<String, String>> build() async {
     final m = <String, String>{};
     for (final k in _keys) {
-      final v = await TheatreApi.instance.getSetting(k);
+      final v = await theatreGetSetting(key: k);
       if (v != null) m[k] = v;
     }
     return m;
   }
 
   Future<void> set(String key, String value) async {
-    await TheatreApi.instance.setSetting(key, value);
+    await theatreSetSetting(key: key, value: value);
     state = AsyncValue.data({...?state.value, key: value});
   }
 }

@@ -12,11 +12,11 @@
 //! - Episode addressing uses composite content ids `"<id>:<S>:<E>"`
 //!   (see `split_content_id`); movies use the plain subject id.
 
+use super::util::extract_year;
 use crate::{
     api::types::*,
     error::{Result, TheatreError},
     net::NetClient,
-    state,
 };
 use async_trait::async_trait;
 use std::{
@@ -179,7 +179,7 @@ impl MovieBoxSource {
             self.absorb_x_user(resp.headers());
             let status = resp.status().as_u16();
             if status == 401 || status == 403 {
-                return Err(self.src_err(&format!("HTTP {}", status)));
+                return Err(self.err(&format!("HTTP {}", status)));
             }
             if RETRY_STATUS.contains(&status) {
                 last_err = format!("HTTP {}", status);
@@ -193,8 +193,8 @@ impl MovieBoxSource {
                 .text()
                 .await
                 .map_err(|e| self.net_err(&e.to_string()))?;
-            let body_val: serde_json::Value = serde_json::from_str(&text)
-                .map_err(|e| self.src_err(&format!("bad json: {}", e)))?;
+            let body_val: serde_json::Value =
+                serde_json::from_str(&text).map_err(|e| self.err(&format!("bad json: {}", e)))?;
             self.active_base_idx.store(idx, Ordering::Relaxed);
             // Envelope: most endpoints nest payload under `data`.
             if let Some(data) = body_val.get("data") {
@@ -202,7 +202,7 @@ impl MovieBoxSource {
             }
             return Ok(body_val);
         }
-        Err(self.src_err(&last_err))
+        Err(self.err(&last_err))
     }
 
     // ── high-level endpoints ─────────────────────────────────
@@ -288,9 +288,6 @@ impl MovieBoxSource {
             source: "moviebox".into(),
             detail: detail.into(),
         }
-    }
-    fn src_err(&self, detail: &str) -> TheatreError {
-        self.err(detail)
     }
     fn net_err(&self, detail: &str) -> TheatreError {
         TheatreError::Network {
@@ -653,13 +650,7 @@ impl MovieBoxSource {
 }
 
 /// (score, playable url, headers, size, filename) for play-info picking.
-type StreamCandidate = (
-    u32,
-    String,
-    Vec<(String, String)>,
-    Option<u64>,
-    String,
-);
+type StreamCandidate = (u32, String, Vec<(String, String)>, Option<u64>, String);
 
 /// Split composite content ids `"subject:S:E"`; movies are plain `"subject"`.
 fn split_content_id(content_id: &str) -> (String, u32, u32) {
@@ -684,25 +675,6 @@ fn str_field(v: &serde_json::Value, keys: &[&str]) -> Option<String> {
             if let Some(s) = val.as_str() {
                 if !s.is_empty() {
                     return Some(s.to_owned());
-                }
-            }
-        }
-    }
-    None
-}
-
-fn extract_year(s: &str) -> Option<u16> {
-    // First 4-digit run (handles "2010-07-16", "2010", "Released 2010").
-    let bytes = s.as_bytes();
-    for i in 0..bytes.len().saturating_sub(3) {
-        if bytes[i].is_ascii_digit()
-            && bytes[i + 1].is_ascii_digit()
-            && bytes[i + 2].is_ascii_digit()
-            && bytes[i + 3].is_ascii_digit()
-        {
-            if let Ok(y) = s[i..i + 4].parse::<u16>() {
-                if (1900..=2100).contains(&y) {
-                    return Some(y);
                 }
             }
         }
@@ -917,30 +889,12 @@ mod crypto {
             r#"{{"package_name":"com.community.oneroom","version_name":"4.0.01.0813.03","version_code":{},"os":"android","os_version":"{}","install_ch":"ps","device_id":"{}","install_store":"ps","gaid":"{}","brand":"{}","model":"{}","system_language":"en","net":"NETWORK_WIFI","region":"US","timezone":"Asia/Kolkata","sp_code":"40401","X-Play-Mode":"2"}}"#,
             code,
             a.0,
-            hex32(),
-            uuid(),
+            uuid::Uuid::now_v7().simple(),
+            uuid::Uuid::now_v7(),
             d.1,
             d.0
         );
         (ua, info)
-    }
-
-    fn hex32() -> String {
-        use rand::Rng;
-        let mut rng = rand::rng();
-        (0..32)
-            .map(|_| format!("{:x}", rng.random_range(0..16)))
-            .collect()
-    }
-    fn uuid() -> String {
-        format!(
-            "{}-{}-{}-{}-{}",
-            hex32()[..8].to_owned(),
-            hex32()[..4].to_owned(),
-            hex32()[..4].to_owned(),
-            hex32()[..4].to_owned(),
-            hex32()[..12].to_owned()
-        )
     }
 
     pub fn random_spoofed_ip() -> String {
@@ -1003,46 +957,6 @@ impl super::Source for MovieBoxSource {
             }
         }
         Self::parse_play_info(&merged, season, episode, &self.user_agent)
-    }
-
-    async fn health_check(&self) -> SourceStatus {
-        let path = "/wefeed-mobile-bff/tab-operating?page=1&tabId=0&version=";
-        let start = self.active_base_idx.load(Ordering::Relaxed);
-        for i in 0..HOST_POOL.len() {
-            let url = format!("{}{}", HOST_POOL[(start + i) % HOST_POOL.len()], path);
-            let headers = crypto::signed_headers(
-                "GET",
-                &url,
-                None,
-                self.session.read().unwrap().clone().as_deref(),
-                &self.user_agent,
-                &self.client_info,
-                &self.spoofed_ip,
-            );
-            match self.net.get(&url, &headers).await {
-                Ok(r) if r.status().is_success() => return SourceStatus::Healthy,
-                Ok(r) => {
-                    if i == HOST_POOL.len() - 1 {
-                        return SourceStatus::Degraded {
-                            since: state::now() as u64,
-                            last_error: format!("HTTP {}", r.status().as_u16()),
-                        };
-                    }
-                }
-                Err(e) => {
-                    if i == HOST_POOL.len() - 1 {
-                        return SourceStatus::Degraded {
-                            since: state::now() as u64,
-                            last_error: e.to_string(),
-                        };
-                    }
-                }
-            }
-        }
-        SourceStatus::Degraded {
-            since: state::now() as u64,
-            last_error: "all hosts exhausted".into(),
-        }
     }
 }
 
