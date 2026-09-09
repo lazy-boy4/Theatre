@@ -1,0 +1,8 @@
+# Codegen options: nested freezed models must serialize via their own
+# toJson so `Model.fromJson(model.toJson())` round-trips (contract tests).
+targets:
+  $default:
+    builders:
+      json_serializable:
+        options:
+          explicit_to_json: true

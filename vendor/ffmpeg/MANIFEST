@@ -1,0 +1,13 @@
+# FFmpeg sidecar binary manifest — tech-stack §5
+# Checksums are verified by CI at packaging time.
+# Binaries are NOT committed to git (see .gitignore).
+#
+# Format: SHA256  filename  platform/ABI
+#
+# TODO (T4.1): populate with pinned FFmpeg release SHA256s.
+# Example:
+# abc123...  ffmpeg-windows-x64.exe       windows/x64
+# def456...  ffmpeg-linux-x64             linux/x64
+# 789abc...  ffmpeg-android-arm64         android/arm64-v8a
+# 012def...  ffmpeg-android-armv7         android/armeabi-v7a
+# 345678...  ffmpeg-android-x86_64        android/x86_64

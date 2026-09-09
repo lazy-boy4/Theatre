@@ -1,0 +1,171 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+  RUSTFLAGS: "-D warnings"
+
+jobs:
+  # ── Rust ──────────────────────────────────────────────────────
+  rust:
+    name: Rust (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022, macos-14]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy,rustfmt
+      - uses: Swatinem/rust-cache@v2
+        with: { workspaces: core }
+
+      - name: fmt
+        working-directory: core
+        run: cargo fmt --check
+
+      - name: clippy
+        working-directory: core
+        run: cargo clippy --all-targets --all-features
+
+      - name: test (unit + security)
+        working-directory: core
+        run: cargo test --workspace -- --nocapture
+
+      - name: test (doc)
+        working-directory: core
+        run: cargo test --doc
+
+  # ── Security audit ──────────────────────────────────────────
+  security:
+    name: Security Audit
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rustsec/audit-check@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          working-directory: core
+
+  # ── Benchmarks (comment P50/P99 on PR) ─────────────────────
+  bench:
+    name: Benchmarks
+    runs-on: ubuntu-24.04
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with: { workspaces: core }
+      - name: Run benchmarks
+        working-directory: core
+        run: cargo bench -p theatre-core -- --output-format bencher | tee bench_output.txt
+      - name: Comment benchmark results
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          tool: cargo
+          output-file-path: core/bench_output.txt
+          fail-on-alert: true
+          alert-threshold: '130%'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          comment-on-alert: true
+
+  # ── Flutter ────────────────────────────────────────────────
+  flutter:
+    name: Flutter
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.x'
+          channel: stable
+
+      - run: flutter pub get
+      - run: flutter analyze --fatal-infos
+      - run: dart format --set-exit-if-changed lib/ test/
+      - run: flutter test
+
+  # ── Android build ───────────────────────────────────────────
+  android:
+    name: Android APK
+    runs-on: ubuntu-24.04
+    needs: [rust, flutter]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with: { targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android }
+      - uses: nttld/setup-ndk@v1
+        with: { ndk-version: r26d }
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.x'
+          channel: stable
+      - name: Build Rust (aarch64)
+        working-directory: core
+        run: cargo build --release --target aarch64-linux-android -p theatre-ffi
+      - name: Flutter build APK
+        working-directory: app
+        run: flutter build apk --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Theatre-android-apk
+          path: app/build/app/outputs/flutter-apk/app-release.apk
+
+  # ── Linux desktop ─────────────────────────────────────────
+  linux:
+    name: Linux Desktop
+    runs-on: ubuntu-24.04
+    needs: [rust, flutter]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.x'
+          channel: stable
+      - run: sudo apt-get install -y ninja-build libgtk-3-dev
+      - name: Build Rust
+        working-directory: core
+        run: cargo build --release -p theatre-ffi
+      - name: Flutter build Linux
+        working-directory: app
+        run: flutter build linux --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Theatre-linux
+          path: app/build/linux/x64/release/bundle/
+
+  # ── Windows desktop ───────────────────────────────────────
+  windows:
+    name: Windows Desktop
+    runs-on: windows-2022
+    needs: [rust, flutter]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.x'
+          channel: stable
+      - name: Build Rust
+        working-directory: core
+        run: cargo build --release -p theatre-ffi
+      - name: Flutter build Windows
+        working-directory: app
+        run: flutter build windows --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Theatre-windows
+          path: app/build/windows/x64/runner/Release/

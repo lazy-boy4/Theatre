@@ -1,0 +1,530 @@
+{
+  "app/lib/api/theatre_api.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691497,
+    "ast_hash": "809ca690bde8495ceb0e80a35f6fc297",
+    "semantic_hash": "809ca690bde8495ceb0e80a35f6fc297"
+  },
+  "app/lib/api/types.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691554,
+    "ast_hash": "e36992577fba5c19ad39b1f3d385c48d",
+    "semantic_hash": "e36992577fba5c19ad39b1f3d385c48d"
+  },
+  "app/lib/core/bootstrap.dart": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8691578,
+    "ast_hash": "cec2346f30a74d0c7c23335bb2d21f27",
+    "semantic_hash": "cec2346f30a74d0c7c23335bb2d21f27"
+  },
+  "app/lib/design/src/t_button.dart": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8691592,
+    "ast_hash": "98f559512c317e062ea3e0675b751d25",
+    "semantic_hash": "98f559512c317e062ea3e0675b751d25"
+  },
+  "app/lib/design/src/t_card.dart": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8691604,
+    "ast_hash": "768b511e4da0878bcd03456d336fc770",
+    "semantic_hash": "768b511e4da0878bcd03456d336fc770"
+  },
+  "app/lib/design/src/t_nav_bar.dart": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8691611,
+    "ast_hash": "12acfd8eb6a3640da18a8324dcaafc85",
+    "semantic_hash": "12acfd8eb6a3640da18a8324dcaafc85"
+  },
+  "app/lib/design/src/t_nav_drawer.dart": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8691626,
+    "ast_hash": "e21743e17e8d3b245238a0d11e137154",
+    "semantic_hash": "e21743e17e8d3b245238a0d11e137154"
+  },
+  "app/lib/design/src/t_nav_rail.dart": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8691635,
+    "ast_hash": "cc4e1e9dce44868063769e6716e2023a",
+    "semantic_hash": "cc4e1e9dce44868063769e6716e2023a"
+  },
+  "app/lib/design/src/theme.dart": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8691645,
+    "ast_hash": "68edc8090f765651f50128e42b327a9e",
+    "semantic_hash": "68edc8090f765651f50128e42b327a9e"
+  },
+  "app/lib/design/tokens.dart": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8691654,
+    "ast_hash": "59e71e41e916ef1a178f833094ae56f7",
+    "semantic_hash": "59e71e41e916ef1a178f833094ae56f7"
+  },
+  "app/lib/ffi/bridge.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691664,
+    "ast_hash": "30d5473a6d138994d20ead05e273ad7d",
+    "semantic_hash": "30d5473a6d138994d20ead05e273ad7d"
+  },
+  "app/lib/main.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691676,
+    "ast_hash": "ecc95dbfdaba0c377577b5e6653de247",
+    "semantic_hash": "ecc95dbfdaba0c377577b5e6653de247"
+  },
+  "app/lib/providers/detail_provider.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691688,
+    "ast_hash": "62bd61fb9a06a881cd8c41e89ab72073",
+    "semantic_hash": "62bd61fb9a06a881cd8c41e89ab72073"
+  },
+  "app/lib/providers/download_provider.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691697,
+    "ast_hash": "1c740be8ea4252a50d43e8be1c9fca3c",
+    "semantic_hash": "1c740be8ea4252a50d43e8be1c9fca3c"
+  },
+  "app/lib/providers/history_provider.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691704,
+    "ast_hash": "615d66225c64fe0ccabf6f5e066dba14",
+    "semantic_hash": "615d66225c64fe0ccabf6f5e066dba14"
+  },
+  "app/lib/providers/init_provider.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691711,
+    "ast_hash": "0e7b717f7b64d6a719c2cf707a04c2bb",
+    "semantic_hash": "0e7b717f7b64d6a719c2cf707a04c2bb"
+  },
+  "app/lib/providers/library_provider.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691726,
+    "ast_hash": "58efdabb1e6f1ff10b15897cacd971c9",
+    "semantic_hash": "58efdabb1e6f1ff10b15897cacd971c9"
+  },
+  "app/lib/providers/search_provider.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691735,
+    "ast_hash": "22ab53a540021a1032889eb0bdc23c23",
+    "semantic_hash": "22ab53a540021a1032889eb0bdc23c23"
+  },
+  "app/lib/providers/settings_provider.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691745,
+    "ast_hash": "026df289042af9236dccb4828a3a67cf",
+    "semantic_hash": "026df289042af9236dccb4828a3a67cf"
+  },
+  "app/lib/screens/detail_screen.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691752,
+    "ast_hash": "6ae0e99f4dae7a67197a7071480dc8d6",
+    "semantic_hash": "6ae0e99f4dae7a67197a7071480dc8d6"
+  },
+  "app/lib/screens/downloads_screen.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691764,
+    "ast_hash": "5a3215c1423f64c5c5f5aa00339f6a91",
+    "semantic_hash": "5a3215c1423f64c5c5f5aa00339f6a91"
+  },
+  "app/lib/screens/history_screen.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691773,
+    "ast_hash": "c54b94f31ad4df4fa33f715c35fe8d8a",
+    "semantic_hash": "c54b94f31ad4df4fa33f715c35fe8d8a"
+  },
+  "app/lib/screens/home_screen.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691785,
+    "ast_hash": "25b956456e48cefddd267b184c79d03f",
+    "semantic_hash": "25b956456e48cefddd267b184c79d03f"
+  },
+  "app/lib/screens/library_screen.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691795,
+    "ast_hash": "e439a712d2a074f21b9288527f6bb583",
+    "semantic_hash": "e439a712d2a074f21b9288527f6bb583"
+  },
+  "app/lib/screens/player_screen.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691807,
+    "ast_hash": "91e56e0f8f8fccbf22eb354db42dab01",
+    "semantic_hash": "91e56e0f8f8fccbf22eb354db42dab01"
+  },
+  "app/lib/screens/search_screen.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691816,
+    "ast_hash": "bf0cc8664b3fded912f449bb5e1c5c50",
+    "semantic_hash": "bf0cc8664b3fded912f449bb5e1c5c50"
+  },
+  "app/lib/screens/settings_screen.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691828,
+    "ast_hash": "42addb83cd3a62276a06fc54401d7eed",
+    "semantic_hash": "42addb83cd3a62276a06fc54401d7eed"
+  },
+  "app/lib/shell/adaptive_shell.dart": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8691835,
+    "ast_hash": "f6132ca2a9b819effb1cca36c8b950af",
+    "semantic_hash": "f6132ca2a9b819effb1cca36c8b950af"
+  },
+  "app/test/api_contract_test.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691843,
+    "ast_hash": "046d8da8dfc5e71e5b3baf262b498965",
+    "semantic_hash": "046d8da8dfc5e71e5b3baf262b498965"
+  },
+  "app/test/widget_test.dart": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8691852,
+    "ast_hash": "49a8108427a8e07adb22af5aca010f9f",
+    "semantic_hash": "49a8108427a8e07adb22af5aca010f9f"
+  },
+  "core/Cargo.toml": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.8691862,
+    "ast_hash": "632a32325ab84050fdfb4bacaf23df37",
+    "semantic_hash": "632a32325ab84050fdfb4bacaf23df37"
+  },
+  "core/crates/theatre-core/Cargo.toml": {
+    "mtime": 1788972771.0,
+    "seen": 1788974627.8691869,
+    "ast_hash": "102f86c84ffc6fcf474d01dca2a7632e",
+    "semantic_hash": "102f86c84ffc6fcf474d01dca2a7632e"
+  },
+  "core/crates/theatre-core/benches/core_bench.rs": {
+    "mtime": 1788972771.0,
+    "seen": 1788974627.869188,
+    "ast_hash": "6c8a4730fb7e6fe3d98a1b0dd94aaaf8",
+    "semantic_hash": "6c8a4730fb7e6fe3d98a1b0dd94aaaf8"
+  },
+  "core/crates/theatre-core/src/api/content.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.869189,
+    "ast_hash": "8ffb329b6ca93c52bf188e644c0ed18c",
+    "semantic_hash": "8ffb329b6ca93c52bf188e644c0ed18c"
+  },
+  "core/crates/theatre-core/src/api/downloader.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.86919,
+    "ast_hash": "19478fbd7a947649ae19b51a855620cd",
+    "semantic_hash": "19478fbd7a947649ae19b51a855620cd"
+  },
+  "core/crates/theatre-core/src/api/history.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.8691907,
+    "ast_hash": "3e787ee644330da493f5fad0a4b4a549",
+    "semantic_hash": "3e787ee644330da493f5fad0a4b4a549"
+  },
+  "core/crates/theatre-core/src/api/library.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.8691916,
+    "ast_hash": "54d36144d13df9b74337a18e469e5e5e",
+    "semantic_hash": "54d36144d13df9b74337a18e469e5e5e"
+  },
+  "core/crates/theatre-core/src/api/lifecycle.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.869193,
+    "ast_hash": "5659721d66ab41a53d2270503a1dbf36",
+    "semantic_hash": "5659721d66ab41a53d2270503a1dbf36"
+  },
+  "core/crates/theatre-core/src/api/mod.rs": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8691938,
+    "ast_hash": "d438fde31dc2948b4ad2a870ea846a7a",
+    "semantic_hash": "d438fde31dc2948b4ad2a870ea846a7a"
+  },
+  "core/crates/theatre-core/src/api/proxy.rs": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8691945,
+    "ast_hash": "443d5ed0d78ef77c18b1e76a35cc7e2b",
+    "semantic_hash": "443d5ed0d78ef77c18b1e76a35cc7e2b"
+  },
+  "core/crates/theatre-core/src/api/resolver.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.869196,
+    "ast_hash": "9b44a22974ab35b649279f8584946c79",
+    "semantic_hash": "9b44a22974ab35b649279f8584946c79"
+  },
+  "core/crates/theatre-core/src/api/security_tests.rs": {
+    "mtime": 1788972771.0,
+    "seen": 1788974627.869197,
+    "ast_hash": "08e92ebd5c2f4da21795f01ddd9446d1",
+    "semantic_hash": "08e92ebd5c2f4da21795f01ddd9446d1"
+  },
+  "core/crates/theatre-core/src/api/settings.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.8691978,
+    "ast_hash": "25258efcfdfd29959cfaa94722265769",
+    "semantic_hash": "25258efcfdfd29959cfaa94722265769"
+  },
+  "core/crates/theatre-core/src/api/subtitles.rs": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8691993,
+    "ast_hash": "52068780ee950537757afcce4bef51d0",
+    "semantic_hash": "52068780ee950537757afcce4bef51d0"
+  },
+  "core/crates/theatre-core/src/api/tests.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.8692005,
+    "ast_hash": "20f7d34851e01907a2b1855798206072",
+    "semantic_hash": "20f7d34851e01907a2b1855798206072"
+  },
+  "core/crates/theatre-core/src/api/types.rs": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8692014,
+    "ast_hash": "d73c4002eaeac8e93e3e259756e37870",
+    "semantic_hash": "d73c4002eaeac8e93e3e259756e37870"
+  },
+  "core/crates/theatre-core/src/downloader/direct.rs": {
+    "mtime": 1788971782.0,
+    "seen": 1788974627.8692024,
+    "ast_hash": "5c6e3916ebf6d32b00f1a2fb610b7a4e",
+    "semantic_hash": "5c6e3916ebf6d32b00f1a2fb610b7a4e"
+  },
+  "core/crates/theatre-core/src/downloader/ffmpeg.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.869203,
+    "ast_hash": "ce6894ec3223b7e1bbb3ed62806a6a45",
+    "semantic_hash": "ce6894ec3223b7e1bbb3ed62806a6a45"
+  },
+  "core/crates/theatre-core/src/downloader/hls.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.8692043,
+    "ast_hash": "e3fb978bf2f478b6e69b085f05cc52b6",
+    "semantic_hash": "e3fb978bf2f478b6e69b085f05cc52b6"
+  },
+  "core/crates/theatre-core/src/downloader/mod.rs": {
+    "mtime": 1788971784.0,
+    "seen": 1788974627.869205,
+    "ast_hash": "8b5570848b2e6d687cbc57e2c9ad1020",
+    "semantic_hash": "8b5570848b2e6d687cbc57e2c9ad1020"
+  },
+  "core/crates/theatre-core/src/downloader/queue.rs": {
+    "mtime": 1788971786.0,
+    "seen": 1788974627.8692062,
+    "ast_hash": "773c9dffae2f631f9fd5f121f4005649",
+    "semantic_hash": "773c9dffae2f631f9fd5f121f4005649"
+  },
+  "core/crates/theatre-core/src/error.rs": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8692071,
+    "ast_hash": "ba60676fc71a96665cc7f935fefdca14",
+    "semantic_hash": "ba60676fc71a96665cc7f935fefdca14"
+  },
+  "core/crates/theatre-core/src/history/mod.rs": {
+    "mtime": 1788971694.0,
+    "seen": 1788974627.869208,
+    "ast_hash": "274176cdb0b04b7727d1be773db6079b",
+    "semantic_hash": "274176cdb0b04b7727d1be773db6079b"
+  },
+  "core/crates/theatre-core/src/lib.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.8692088,
+    "ast_hash": "5561b72c07ad05b87ed782535cdfb1eb",
+    "semantic_hash": "5561b72c07ad05b87ed782535cdfb1eb"
+  },
+  "core/crates/theatre-core/src/library/mod.rs": {
+    "mtime": 1788971697.0,
+    "seen": 1788974627.86921,
+    "ast_hash": "30ad2f3f44e912a50282bdedaf046225",
+    "semantic_hash": "30ad2f3f44e912a50282bdedaf046225"
+  },
+  "core/crates/theatre-core/src/net/mod.rs": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.869211,
+    "ast_hash": "587c10b9c794d82de8556337e4b250fb",
+    "semantic_hash": "587c10b9c794d82de8556337e4b250fb"
+  },
+  "core/crates/theatre-core/src/proxy/mod.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.869212,
+    "ast_hash": "d3b724dd64bab8bedd226d652593025d",
+    "semantic_hash": "d3b724dd64bab8bedd226d652593025d"
+  },
+  "core/crates/theatre-core/src/proxy/server.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.8692126,
+    "ast_hash": "93b6e9cfccbbbf4667016276c834f778",
+    "semantic_hash": "93b6e9cfccbbbf4667016276c834f778"
+  },
+  "core/crates/theatre-core/src/proxy/session.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.869214,
+    "ast_hash": "61f202632097a3751e019a6838282766",
+    "semantic_hash": "61f202632097a3751e019a6838282766"
+  },
+  "core/crates/theatre-core/src/proxy/spool.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.869215,
+    "ast_hash": "15f9d577f9abdf220faef59c31cae014",
+    "semantic_hash": "15f9d577f9abdf220faef59c31cae014"
+  },
+  "core/crates/theatre-core/src/resolver/mod.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.869216,
+    "ast_hash": "09b6d4912e50da18377a5ee43608e115",
+    "semantic_hash": "09b6d4912e50da18377a5ee43608e115"
+  },
+  "core/crates/theatre-core/src/settings/mod.rs": {
+    "mtime": 1788971696.0,
+    "seen": 1788974627.8692167,
+    "ast_hash": "2eb1c4bdf72fb44122d53de9f16f51a0",
+    "semantic_hash": "2eb1c4bdf72fb44122d53de9f16f51a0"
+  },
+  "core/crates/theatre-core/src/sources/bdix.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.8692179,
+    "ast_hash": "fd65d7f54bacdf261121df61ca3d4572",
+    "semantic_hash": "fd65d7f54bacdf261121df61ca3d4572"
+  },
+  "core/crates/theatre-core/src/sources/health.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.8692188,
+    "ast_hash": "ca43256d4b9d592aa76943c68a5f44f9",
+    "semantic_hash": "ca43256d4b9d592aa76943c68a5f44f9"
+  },
+  "core/crates/theatre-core/src/sources/khddhub.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.8692198,
+    "ast_hash": "94e2249bcd7fa98e603d913dfcefa485",
+    "semantic_hash": "94e2249bcd7fa98e603d913dfcefa485"
+  },
+  "core/crates/theatre-core/src/sources/mod.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.8692205,
+    "ast_hash": "1845f9220f9b8153d5994f4d3a1d095b",
+    "semantic_hash": "1845f9220f9b8153d5994f4d3a1d095b"
+  },
+  "core/crates/theatre-core/src/sources/moviebox.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.869222,
+    "ast_hash": "d5f625a9515894cbaec06bc95d3dbfcf",
+    "semantic_hash": "d5f625a9515894cbaec06bc95d3dbfcf"
+  },
+  "core/crates/theatre-core/src/sources/registry.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.8692226,
+    "ast_hash": "55e035b29069dda66a16c6b1d9941c63",
+    "semantic_hash": "55e035b29069dda66a16c6b1d9941c63"
+  },
+  "core/crates/theatre-core/src/state/mod.rs": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8692236,
+    "ast_hash": "9166a20757fd66bbeaa8cb0c08be9dc4",
+    "semantic_hash": "9166a20757fd66bbeaa8cb0c08be9dc4"
+  },
+  "core/crates/theatre-core/src/subtitles/mod.rs": {
+    "mtime": 1788972063.0,
+    "seen": 1788974627.8692245,
+    "ast_hash": "108c7aa708fcb720b29b671ddadb271b",
+    "semantic_hash": "108c7aa708fcb720b29b671ddadb271b"
+  },
+  "core/crates/theatre-ffi/Cargo.toml": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8692255,
+    "ast_hash": "d090ee672705e743d272c8025d3fee2e",
+    "semantic_hash": "d090ee672705e743d272c8025d3fee2e"
+  },
+  "core/crates/theatre-ffi/src/lib.rs": {
+    "mtime": 1788972771.0,
+    "seen": 1788974627.8692262,
+    "ast_hash": "df458d9792c06db9279b013c29f61fa5",
+    "semantic_hash": "df458d9792c06db9279b013c29f61fa5"
+  },
+  "tui/Cargo.toml": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8692274,
+    "ast_hash": "f391e3323f5fe00a7a1dd668a7a05ffd",
+    "semantic_hash": "f391e3323f5fe00a7a1dd668a7a05ffd"
+  },
+  "tui/src/main.rs": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8692284,
+    "ast_hash": "ffd0d21a5771e378a6831824c2bcfad2",
+    "semantic_hash": "ffd0d21a5771e378a6831824c2bcfad2"
+  },
+  ".github/workflows/ci.yml": {
+    "mtime": 1788972771.0,
+    "seen": 1788974627.8692296,
+    "ast_hash": "4791f212ae326dbdd2e62088f6bfda3e",
+    "semantic_hash": "4791f212ae326dbdd2e62088f6bfda3e"
+  },
+  ".github/workflows/release.yml": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8692303,
+    "ast_hash": "de801b84d59cd1284ae33649f3ff0558",
+    "semantic_hash": "de801b84d59cd1284ae33649f3ff0558"
+  },
+  "AGENTS.md": {
+    "mtime": 1788905305.475763,
+    "seen": 1788974627.869231,
+    "ast_hash": "aa8d6ea432cbaad28d0d47c014898d21",
+    "semantic_hash": "aa8d6ea432cbaad28d0d47c014898d21"
+  },
+  "BUILD.md": {
+    "mtime": 1788972771.0,
+    "seen": 1788974627.8692322,
+    "ast_hash": "9a17f8e5cd33915728bf4fa4388de1af",
+    "semantic_hash": "9a17f8e5cd33915728bf4fa4388de1af"
+  },
+  "CONTRIBUTING.md": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.8692334,
+    "ast_hash": "7bde7c793ccf424d63ff44a11e445d25",
+    "semantic_hash": "7bde7c793ccf424d63ff44a11e445d25"
+  },
+  "SECURITY.md": {
+    "mtime": 1788972771.0,
+    "seen": 1788974627.869234,
+    "ast_hash": "cfd30017d46a362eccc881a7ff8f602b",
+    "semantic_hash": "cfd30017d46a362eccc881a7ff8f602b"
+  },
+  "app/analysis_options.yaml": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.8692353,
+    "ast_hash": "7f935d5c27ef7fa4f177f370d3c4a6f1",
+    "semantic_hash": "7f935d5c27ef7fa4f177f370d3c4a6f1"
+  },
+  "app/pubspec.yaml": {
+    "mtime": 1788972397.0,
+    "seen": 1788974627.869236,
+    "ast_hash": "665dd480a3d8e65857900bbd15f88990",
+    "semantic_hash": "665dd480a3d8e65857900bbd15f88990"
+  },
+  "docs/architecture.md": {
+    "mtime": 1788892626.2281916,
+    "seen": 1788974627.869237,
+    "ast_hash": "65b7ef08eb6209fb61c2433a2fc9abc0",
+    "semantic_hash": "65b7ef08eb6209fb61c2433a2fc9abc0"
+  },
+  "docs/data-contract.md": {
+    "mtime": 1788896142.0743842,
+    "seen": 1788974627.8692377,
+    "ast_hash": "20edafe9ff6eef1513be5085ba3b69b7",
+    "semantic_hash": "20edafe9ff6eef1513be5085ba3b69b7"
+  },
+  "docs/prd.md": {
+    "mtime": 1788891941.276838,
+    "seen": 1788974627.8692389,
+    "ast_hash": "326fe68acecd4ba2de125f8ca7b9a1dd",
+    "semantic_hash": "326fe68acecd4ba2de125f8ca7b9a1dd"
+  },
+  "docs/roadmap.md": {
+    "mtime": 1788899108.3365476,
+    "seen": 1788974627.8692398,
+    "ast_hash": "ede4d2b5cc8bc21f19381520a7daf347",
+    "semantic_hash": "ede4d2b5cc8bc21f19381520a7daf347"
+  },
+  "docs/tech-stack.md": {
+    "mtime": 1788896249.1782508,
+    "seen": 1788974627.869242,
+    "ast_hash": "895b61a46212001cd3bca9413424d1c4",
+    "semantic_hash": "895b61a46212001cd3bca9413424d1c4"
+  },
+  "tui/README.md": {
+    "mtime": 1788971043.0,
+    "seen": 1788974627.869243,
+    "ast_hash": "ec7fe75f84fdb9e13f3247c556e6779e",
+    "semantic_hash": "ec7fe75f84fdb9e13f3247c556e6779e"
+  }
+}

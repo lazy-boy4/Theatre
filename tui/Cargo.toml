@@ -1,0 +1,16 @@
+[package]
+name        = "theatre-tui"
+description = "Ratatui terminal frontend for Theatre"
+version     = "0.1.0"
+edition     = "2021"
+license     = "MIT OR Apache-2.0"
+
+[[bin]]
+name = "theatre-tui"
+path = "src/main.rs"
+
+[dependencies]
+theatre-core = { path = "../core/crates/theatre-core" }
+ratatui      = "0.30"
+crossterm    = "0.28"
+tokio        = { version = "1.53", features = ["rt-multi-thread", "macros"] }

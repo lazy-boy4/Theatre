@@ -1,0 +1,56 @@
+[workspace]
+members = [
+    "crates/theatre-core",
+    "crates/theatre-ffi",
+]
+resolver = "2"
+
+[workspace.package]
+version      = "0.1.0"
+edition      = "2021"
+license      = "MIT OR Apache-2.0"
+authors      = ["Theatre Contributors"]
+rust-version = "1.83"
+
+[workspace.dependencies]
+# Runtime
+tokio        = { version = "1.53", features = ["rt-multi-thread", "macros", "net", "fs", "process", "time", "sync", "signal"] }
+axum         = { version = "0.8" }
+reqwest      = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "stream"] }
+rusqlite     = { version = "0.40", features = ["bundled"] }
+# Serialization
+serde        = { version = "1", features = ["derive"] }
+serde_json   = { version = "1" }
+# Error handling
+thiserror    = { version = "2" }
+# Utilities
+rand         = { version = "0.9" }
+uuid         = { version = "1", features = ["v7"] }
+# Async
+tokio-stream = { version = "0.1" }
+futures      = { version = "0.3" }
+async-trait  = { version = "0.1" }
+async-stream = { version = "0.3" }
+bytes        = { version = "1" }
+# Scraping
+scraper      = { version = "0.23" }
+url          = { version = "2" }
+# Benchmarks
+criterion    = { version = "0.5" }
+# MovieBox request signing (ported from MovieBox-TUI crypto.rs)
+hmac         = { version = "0.12" }
+md5          = { package = "md-5", version = "0.10" }
+base64       = { version = "0.22" }
+# FFI
+flutter_rust_bridge = { version = "2.12" }
+
+[profile.release]
+opt-level = 3
+strip     = true
+lto       = true
+codegen-units = 1
+panic     = "abort"
+
+[profile.dev]
+debug     = true
+opt-level = 0

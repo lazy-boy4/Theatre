@@ -1,0 +1,18 @@
+[package]
+name        = "theatre-ffi"
+description = "flutter_rust_bridge-facing crate — thin wrapper over theatre-core"
+version.workspace    = true
+edition.workspace    = true
+license.workspace    = true
+authors.workspace    = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+theatre-core       = { path = "../theatre-core" }
+flutter_rust_bridge = "=2.13.0"
+serde               = { workspace = true }
+serde_json          = { workspace = true }
+tokio.workspace    = true

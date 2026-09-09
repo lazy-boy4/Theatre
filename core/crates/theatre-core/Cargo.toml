@@ -1,0 +1,46 @@
+[package]
+name        = "theatre-core"
+description = "Theatre Rust core: sources, resolver, downloader, proxy, library, history"
+version.workspace    = true
+edition.workspace    = true
+license.workspace    = true
+authors.workspace    = true
+rust-version.workspace = true
+
+[lib]
+name       = "theatre_core"
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[dependencies]
+tokio.workspace       = true
+axum.workspace        = true
+reqwest               = { workspace = true, features = ["json", "stream"] }
+rusqlite.workspace    = true
+serde.workspace       = true
+serde_json.workspace  = true
+thiserror.workspace   = true
+rand.workspace        = true
+uuid.workspace        = true
+tokio-stream.workspace = true
+futures               = { workspace = true }
+scraper.workspace     = true
+url.workspace         = true
+hmac.workspace        = true
+md5.workspace         = true
+base64.workspace      = true
+async-trait           = "0.1"
+async-stream          = "0.3"
+bytes                 = "1"
+
+[dev-dependencies]
+tempfile  = "3"
+criterion = { workspace = true }
+tokio     = { workspace = true, features = ["rt", "macros"] }
+reqwest   = { workspace = true }
+
+[[bench]]
+name    = "core_bench"
+harness = false
+
+[features]
+default = []

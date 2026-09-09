@@ -1,0 +1,7 @@
+# flutter_rust_bridge 2.x codegen config.
+# Runtime crate MUST equal codegen version exactly (tech-stack.md §2).
+# Run from core/: `flutter_rust_bridge_codegen generate`
+rust_input: crate::api
+rust_root: crates/theatre-ffi
+dart_root: ../app
+dart_output: ../app/lib/ffi

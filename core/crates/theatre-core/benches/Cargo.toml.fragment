@@ -1,0 +1,2 @@
+# Add to workspace Cargo.toml [workspace.dependencies] to enable benchmarks:
+# criterion = { version = "0.5", features = ["html_reports"] }
