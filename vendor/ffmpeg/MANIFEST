@@ -5,8 +5,9 @@
 # Format: SHA256  filename  platform/ABI
 #
 # TODO (T4.1): populate with pinned FFmpeg release SHA256s.
-# Example:
-# abc123...  ffmpeg-windows-x64.exe       windows/x64
+# Pinned 2026-09-09 (smoke build): gyan.dev essentials 9.0.1 win64.
+72A489ECCD008C2EC2C0A5856C5C75BC3D8BBFA90166C4566865C246445E6AA3  ffmpeg-windows-x64.exe       windows/x64
+19202B23C0043F15AD1B7BCE2344F406FD52BD6EFD8F995CE02E7392A1CEC52F  ffprobe-windows-x64.exe      windows/x64
 # def456...  ffmpeg-linux-x64             linux/x64
 # 789abc...  ffmpeg-android-arm64         android/arm64-v8a
 # 012def...  ffmpeg-android-armv7         android/armeabi-v7a

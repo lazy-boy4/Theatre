@@ -161,7 +161,15 @@ impl MovieBoxSource {
                 &self.client_info,
                 &self.spoofed_ip,
             );
-            let resp = match self.net.get(&url, &headers).await {
+            let resp = if method == "POST" {
+                match &body {
+                    Some(b) => self.net.post_raw(&url, &headers, b).await,
+                    None => self.net.post_raw(&url, &headers, "").await,
+                }
+            } else {
+                self.net.get(&url, &headers).await
+            };
+            let resp = match resp {
                 Ok(r) => r,
                 Err(e) => {
                     last_err = e.to_string();

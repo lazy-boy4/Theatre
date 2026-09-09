@@ -65,6 +65,30 @@ impl NetClient {
         self.request(url, headers, Some(offset)).await
     }
 
+    /// POST with a pre-encoded body string (MovieBox signed JSON calls).
+    /// The signed header map already carries Content-Type: application/json.
+    pub async fn post_raw(
+        &self,
+        url: &str,
+        headers: &HashMap<String, String>,
+        body: &str,
+    ) -> Result<NetResponse> {
+        let host = host_of(url).unwrap_or_default();
+        self.politeness_wait(&host).await;
+        let mut builder = self.client.post(url).body(body.to_owned());
+        for (k, v) in headers {
+            if v.contains('\r') || v.contains('\n') {
+                continue;
+            }
+            builder = builder.header(k.as_str(), v.as_str());
+        }
+        let resp = builder.send().await.map_err(|e| TheatreError::Network {
+            detail: e.to_string(),
+        })?;
+        self.release(&host);
+        Ok(NetResponse(resp))
+    }
+
     /// POST with a JSON body (BDIX DhakaFlix file-browser API).
     pub async fn post_json(
         &self,
