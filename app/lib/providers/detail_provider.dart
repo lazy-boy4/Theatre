@@ -8,3 +8,8 @@ final detailProvider = FutureProviderFamily<Details, ContentRef>(
 final resolveProvider = FutureProviderFamily<ResolvedStream, (ContentRef, String?)>(
   (ref, args) => theatreResolve(content: args.$1, variant: args.$2),
 );
+
+/// Enabled sources with health, for the Details source row (PRD F1/F8).
+final sourcesProvider = FutureProvider<List<SourceInfo>>(
+  (ref) => theatreListSources(),
+);

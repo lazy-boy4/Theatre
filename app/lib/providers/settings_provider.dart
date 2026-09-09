@@ -23,4 +23,19 @@ class SettingsNotifier extends AsyncNotifier<Map<String, String>> {
   }
 }
 
+/// Human-readable subtitle language names (settings + details share these).
+String subtitleLabel(String code) => switch (code) {
+      'Auto' => 'Auto',
+      'en' => 'English',
+      'bn' => 'Bengali (বাংলা)',
+      'hi' => 'Hindi (हिन्दी)',
+      'ar' => 'Arabic (العربية)',
+      'es' => 'Spanish (Español)',
+      'fr' => 'French (Français)',
+      'de' => 'German (Deutsch)',
+      'ja' => 'Japanese (日本語)',
+      'ko' => 'Korean (한국어)',
+      _ => code,
+    };
+
 final settingsProvider = AsyncNotifierProvider<SettingsNotifier, Map<String, String>>(SettingsNotifier.new);
