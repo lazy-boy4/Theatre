@@ -1,7 +1,7 @@
 # Graph Report - theatre  (2026-09-25)
 
 ## Corpus Check
-- 55 files · ~73,349 words
+- 22 files · ~73,596 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -193,13 +193,6 @@
 
 ## Import Cycles
 - None detected.
-
-## Hyperedges (group relationships)
-- **Repository Agent Governance and Issue Tracking System** — agents_md_agent_guidelines_updated, docs_agents_issue_tracker_protocol, docs_agents_triage_labels_protocol, docs_agents_domain_docs_protocol [EXTRACTED 0.95]
-- **FFI Data Contract and Cross-Language Bridge** — docs_data_contract_ffi_contract, docs_architecture_ffi_boundary, docs_data_contract_lifecycle_api [EXTRACTED 0.95]
-- **Scraper Source Deepening, Seams and Fixture Testing** — docs_agents_research_sources_seam, scratch_sources_deepening_issue_seam, scratch_sources_deepening_test_seam, tests_fixtures_khddhub_detail, tests_fixtures_khddhub_search [EXTRACTED 0.95]
-- **Theatre Cross-Platform Media Engine Architecture** — docs_architecture_system_overview, docs_architecture_rust_core, docs_architecture_ffi_boundary, docs_prd_dual_frontends, docs_prd_platform_targets [EXTRACTED 0.95]
-- **Material 3 Expressive Design System & UI Architecture** — docs_design_system_tokens, docs_design_m3e_expressive, docs_design_motion_spec, impeccable_critique_app_lib_screens, app_readme_flutter_overview [EXTRACTED 0.95]
 
 ## Communities (163 total, 96 thin omitted)
 
@@ -452,11 +445,11 @@ Nodes (3): theatre-core, theatre-ffi, theatre-tui
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `String` connect `Local Library Management UI` to `Settings Configuration UI`, `Download Queue Management`, `Windows Native C++ Embedder`, `Rust FRB SSE Serialization`, `Domain Model Freezed Types`, `Source Deepening & Seams`, `Media Stream Resolver Core`, `Loopback HTTP Streaming Proxy`, `Direct Stream Downloader`, `Async Network Client & Headers`, `Flutter Contract Unit Tests`, `Governance Architecture & Specs`, `Agents Component`, `Types.Freezed Component`, `FFmpeg Sidecar Transcoding`, `Search Screen UI & Flow`, `HLS Stream Segment Downloader`?**
-  _High betweenness centrality (0.114) - this node is a cross-community bridge._
+  _High betweenness centrality (0.133) - this node is a cross-community bridge._
 - **Why does `MovieBoxSource` connect `Download Queue Management` to `Media Player Screen & Controller`, `Local Library Management UI`, `Async Network Client & Headers`, `Watch History UI & Provider`?**
-  _High betweenness centrality (0.048) - this node is a cross-community bridge._
-- **Why does `Source` connect `Media Player Screen & Controller` to `Direct Stream Downloader`, `Download Queue Management`, `HLS Stream Segment Downloader`?**
-  _High betweenness centrality (0.027) - this node is a cross-community bridge._
+  _High betweenness centrality (0.044) - this node is a cross-community bridge._
+- **Why does `_` connect `Dart Web Codegen Deserializers` to `Core Application Lifecycle`, `Dart IO Codegen Deserializers`, `Frb Generated.Web Component`, `Frb Generated.Io Component`, `Detail & Settings Providers`, `Lib Component`?**
+  _High betweenness centrality (0.040) - this node is a cross-community bridge._
 - **What connects `apiImplConstructor`, `codegenVersion`, `crateApiInitApp` to the rest of the system?**
   _456 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Dart FRB Bridge Codegen` be split into smaller, more focused modules?**

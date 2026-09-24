@@ -408,10 +408,10 @@
     "semantic_hash": "ffd0d21a5771e378a6831824c2bcfad2"
   },
   ".github/workflows/ci.yml": {
-    "mtime": 1788972771.0,
-    "seen": 1788974627.8692296,
-    "ast_hash": "4791f212ae326dbdd2e62088f6bfda3e",
-    "semantic_hash": "4791f212ae326dbdd2e62088f6bfda3e"
+    "mtime": 1790282845.1124744,
+    "seen": 1790284701.0016103,
+    "ast_hash": "823b5288d66a3f5f5a3afc6ee951f133",
+    "semantic_hash": "823b5288d66a3f5f5a3afc6ee951f133"
   },
   ".github/workflows/release.yml": {
     "mtime": 1788971043.0,
@@ -420,10 +420,10 @@
     "semantic_hash": "de801b84d59cd1284ae33649f3ff0558"
   },
   "AGENTS.md": {
-    "mtime": 1788980164.2116206,
-    "seen": 1788993236.3479478,
-    "ast_hash": "8c1e5ccc8a07b94161e3f96869041fc9",
-    "semantic_hash": "8c1e5ccc8a07b94161e3f96869041fc9"
+    "mtime": 1790284650.4068494,
+    "seen": 1790284701.0016205,
+    "ast_hash": "c4836a9185850614503c09423ff8eace",
+    "semantic_hash": "c4836a9185850614503c09423ff8eace"
   },
   "BUILD.md": {
     "mtime": 1788972771.0,
@@ -444,10 +444,10 @@
     "semantic_hash": "cfd30017d46a362eccc881a7ff8f602b"
   },
   "app/analysis_options.yaml": {
-    "mtime": 1788978359.820357,
-    "seen": 1788993236.3479514,
-    "ast_hash": "c2ec9472d88d558efae42879cd3e2eaa",
-    "semantic_hash": "c2ec9472d88d558efae42879cd3e2eaa"
+    "mtime": 1790282845.1281157,
+    "seen": 1790284701.0016313,
+    "ast_hash": "d9b97545f95c4fd385610fa6a4331cdb",
+    "semantic_hash": "d9b97545f95c4fd385610fa6a4331cdb"
   },
   "app/pubspec.yaml": {
     "mtime": 1788980172.6430528,
@@ -474,16 +474,16 @@
     "semantic_hash": "326fe68acecd4ba2de125f8ca7b9a1dd"
   },
   "docs/roadmap.md": {
-    "mtime": 1790271657.2287586,
-    "seen": 1790272656.0996213,
-    "ast_hash": "8c0faf3910b51293bcf936916842ae76",
-    "semantic_hash": "8c0faf3910b51293bcf936916842ae76"
+    "mtime": 1790284659.48647,
+    "seen": 1790284701.0016701,
+    "ast_hash": "edee1e441e3a7a6d45b5224de36226ab",
+    "semantic_hash": "edee1e441e3a7a6d45b5224de36226ab"
   },
   "docs/tech-stack.md": {
-    "mtime": 1788980540.5688097,
-    "seen": 1788993236.347964,
-    "ast_hash": "369697ca000cf6716dcb9fc49fc356b7",
-    "semantic_hash": "369697ca000cf6716dcb9fc49fc356b7"
+    "mtime": 1790284673.8980615,
+    "seen": 1790284701.0016718,
+    "ast_hash": "e52c5a82406840501336ab8e893d464c",
+    "semantic_hash": "e52c5a82406840501336ab8e893d464c"
   },
   "tui/README.md": {
     "mtime": 1788971043.0,
@@ -654,28 +654,28 @@
     "semantic_hash": "5d748b2f9026233e3b9e0382219de8ff"
   },
   ".scratch/sources-deepening/issues/01-seam-placement.md": {
-    "mtime": 1788982270.0077534,
-    "seen": 1788993236.347944,
-    "ast_hash": "3318b9e1136eb8ef0ae49a829cb048e2",
-    "semantic_hash": "3318b9e1136eb8ef0ae49a829cb048e2"
+    "mtime": 1790282845.1281157,
+    "seen": 1790284701.001615,
+    "ast_hash": "1301a94bd0a337da087e540d14ef15f8",
+    "semantic_hash": "1301a94bd0a337da087e540d14ef15f8"
   },
   ".scratch/sources-deepening/issues/02-test-seam.md": {
-    "mtime": 1788989201.0996325,
-    "seen": 1788993236.3479452,
-    "ast_hash": "38c8118ba78ed0fa02ad3a47268f2d3d",
-    "semantic_hash": "38c8118ba78ed0fa02ad3a47268f2d3d"
+    "mtime": 1790282845.1281157,
+    "seen": 1790284701.0016172,
+    "ast_hash": "66aa29e01932714a900b41f35a59005d",
+    "semantic_hash": "66aa29e01932714a900b41f35a59005d"
   },
   ".scratch/sources-deepening/map.md": {
-    "mtime": 1788989201.0996325,
-    "seen": 1788993236.3479464,
-    "ast_hash": "4ec1d77498ec94bdc7c2a749df637429",
-    "semantic_hash": "4ec1d77498ec94bdc7c2a749df637429"
+    "mtime": 1790282845.1281157,
+    "seen": 1790284701.0016186,
+    "ast_hash": "3d79949df94be71d7509dbe03511467e",
+    "semantic_hash": "3d79949df94be71d7509dbe03511467e"
   },
   "README.md": {
-    "mtime": 1788989153.2144122,
-    "seen": 1788993236.347949,
-    "ast_hash": "1adec91c7b03f2c0c18e20e8e63dcd83",
-    "semantic_hash": "1adec91c7b03f2c0c18e20e8e63dcd83"
+    "mtime": 1790282845.1281157,
+    "seen": 1790284701.001626,
+    "ast_hash": "9b65189644d052a98202c2d4483b76e7",
+    "semantic_hash": "9b65189644d052a98202c2d4483b76e7"
   },
   "app/README.md": {
     "mtime": 1788978357.1891234,
@@ -708,34 +708,34 @@
     "semantic_hash": "df7de045b0afccd080d41143906573b4"
   },
   "docs/agents/domain.md": {
-    "mtime": 1788980158.4659042,
-    "seen": 1788993236.3479583,
-    "ast_hash": "5c554b97de22d1765176bc82093ca190",
-    "semantic_hash": "5c554b97de22d1765176bc82093ca190"
+    "mtime": 1790282845.1893032,
+    "seen": 1790284701.0016549,
+    "ast_hash": "2c5f2c5f8b714234251bc55dbfdc0da0",
+    "semantic_hash": "2c5f2c5f8b714234251bc55dbfdc0da0"
   },
   "docs/agents/issue-tracker.md": {
-    "mtime": 1788980156.0310593,
-    "seen": 1788993236.3479593,
-    "ast_hash": "f6ea6281af476a211243069a6cd171f8",
-    "semantic_hash": "f6ea6281af476a211243069a6cd171f8"
+    "mtime": 1790282845.1913104,
+    "seen": 1790284701.001657,
+    "ast_hash": "f7a4c1d8300e294d0d8872dac7c37c52",
+    "semantic_hash": "f7a4c1d8300e294d0d8872dac7c37c52"
   },
   "docs/agents/research-sources-seam-20260910.md": {
-    "mtime": 1788981487.9506667,
-    "seen": 1788993236.347961,
-    "ast_hash": "723ee8ec3fe4510e30b11aeb224a897c",
-    "semantic_hash": "723ee8ec3fe4510e30b11aeb224a897c"
+    "mtime": 1790282845.1913104,
+    "seen": 1790284701.001659,
+    "ast_hash": "53e9ff51b553e7a74994df6942eaebd8",
+    "semantic_hash": "53e9ff51b553e7a74994df6942eaebd8"
   },
   "docs/agents/triage-labels.md": {
-    "mtime": 1788980160.6733844,
-    "seen": 1788993236.347962,
-    "ast_hash": "22add54cb98451c55b20e6b7992d4a85",
-    "semantic_hash": "22add54cb98451c55b20e6b7992d4a85"
+    "mtime": 1790282845.195325,
+    "seen": 1790284701.0016608,
+    "ast_hash": "85409347dbf487c8a25c9dac59708b83",
+    "semantic_hash": "85409347dbf487c8a25c9dac59708b83"
   },
   "docs/design.md": {
-    "mtime": 1788988449.510305,
-    "seen": 1788993236.3479629,
-    "ast_hash": "364565ba8eeef762fa44b4d931eeb42c",
-    "semantic_hash": "364565ba8eeef762fa44b4d931eeb42c"
+    "mtime": 1790282845.195325,
+    "seen": 1790284701.0016665,
+    "ast_hash": "06a832cfbfa07696d3871da93fdb6672",
+    "semantic_hash": "06a832cfbfa07696d3871da93fdb6672"
   },
   "scripts/README.md": {
     "mtime": 1788971043.0,
@@ -814,5 +814,53 @@
     "seen": 1790283817.7101543,
     "ast_hash": "ffa1a7c0a2ad45a2c14a921596516ff8",
     "semantic_hash": "ffa1a7c0a2ad45a2c14a921596516ff8"
+  },
+  "app/linux/CMakeLists.txt": {
+    "mtime": 1790282845.169627,
+    "seen": 1790284701.0016353,
+    "ast_hash": "0f0f2887f25c86662e8f9d6c5b0b1d9f",
+    "semantic_hash": "0f0f2887f25c86662e8f9d6c5b0b1d9f"
+  },
+  "app/linux/flutter/CMakeLists.txt": {
+    "mtime": 1790282845.169627,
+    "seen": 1790284701.0016375,
+    "ast_hash": "2195470ce31675d31db5a37590d011f6",
+    "semantic_hash": "2195470ce31675d31db5a37590d011f6"
+  },
+  "app/linux/runner/CMakeLists.txt": {
+    "mtime": 1790282845.1755471,
+    "seen": 1790284701.001639,
+    "ast_hash": "30cc1614b16214b66c014af09ba699eb",
+    "semantic_hash": "30cc1614b16214b66c014af09ba699eb"
+  },
+  "app/android/app/src/main/res/mipmap-hdpi/ic_launcher.png": {
+    "mtime": 1790282845.144172,
+    "seen": 1790284701.0016773,
+    "ast_hash": "13e9c72ec37fac220397aa819fa1ef2d",
+    "semantic_hash": "13e9c72ec37fac220397aa819fa1ef2d"
+  },
+  "app/android/app/src/main/res/mipmap-mdpi/ic_launcher.png": {
+    "mtime": 1790282845.144172,
+    "seen": 1790284701.0016794,
+    "ast_hash": "6270344430679711b81476e29878caa7",
+    "semantic_hash": "6270344430679711b81476e29878caa7"
+  },
+  "app/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png": {
+    "mtime": 1790282845.144172,
+    "seen": 1790284701.0016809,
+    "ast_hash": "a0a8db5985280b3679d99a820ae2db79",
+    "semantic_hash": "a0a8db5985280b3679d99a820ae2db79"
+  },
+  "app/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png": {
+    "mtime": 1790282845.144172,
+    "seen": 1790284701.0016828,
+    "ast_hash": "afe1b655b9f32da22f9a4301bb8e6ba8",
+    "semantic_hash": "afe1b655b9f32da22f9a4301bb8e6ba8"
+  },
+  "app/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png": {
+    "mtime": 1790282845.144172,
+    "seen": 1790284701.0016837,
+    "ast_hash": "57838d52c318faff743130c3fcfae0c6",
+    "semantic_hash": "57838d52c318faff743130c3fcfae0c6"
   }
 }

@@ -39,7 +39,7 @@
 | T0.6 | `done` | **Pin the stack:** resolve every "locked at M0" entry in tech-stack.md, commit `pubspec.lock` + `Cargo.lock`, record exact versions in tech-stack.md tables | — | S | Lockfiles committed; tech-stack has zero "latest" entries | tech-stack |
 | T0.7 | `done` | Quality gates in CI: clippy, rustfmt, `dart analyze`, unit-test runners both sides | — | S | CI enforces lints | — |
 
-**Gate-M0:** repo public, CI green on all four runners, docs committed. Demo: clone → build → run empty app on Windows. (Passed)
+**Gate-M0:** repo public, CI green on all four runners, docs committed. Demo: clone → build → run empty app on Windows. (awaiting-human)
 
 ## 3. Milestone M1 — Seam Prototype (single-lane; opens two lanes at its gate)
 

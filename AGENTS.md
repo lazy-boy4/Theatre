@@ -37,7 +37,7 @@
 1. **No dependency exists unless `tech-stack.md` says so.** Adding one = update tech-stack + lockfiles in the same task, with rationale and fallback.
 2. **Never import `material_3_expressive` or `material` directly in `lib/features/`** — token layer (`lib/design/`) only. CI lint enforces this.
 3. **The data contract is additive-only within v1.** New fields must be optional; breaking changes require a major contract bump + migration section, and a human checkpoint.
-4. **Never skip or self-pass a `Gate-Mx`.** Gates are passed by the human only.
+4. **Never skip or self-pass a `Gate-Mx`.** Gates are passed by the human only. Marking any Gate-Mx passed is reserved for the human; agents set gates to 'awaiting-human' and stop.
 5. **Never network in scraper tests.** Fixtures only.
 6. **Never widen scope** beyond the roadmap task. Log suggestions as roadmap todos.
 7. **Never force-push `main`.** Never commit secrets, tokens, or large binaries (sidecars live in `vendor/` per its MANIFEST rules).
