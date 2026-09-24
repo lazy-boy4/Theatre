@@ -169,11 +169,12 @@
 
 ## 12. Rules for Agents Consuming This File
 
-1. Pick the first `todo` task in **your lane** (or the single lane pre-Gate-M1). Never work ahead of an unpassed gate.
+1. Pick the first `todo` task in **your lane** (or the single lane pre-Gate-M1). Subject to the lookahead clause (§12.7), never work ahead of an unpassed gate.
 2. Read the task's contract/docs columns *before* coding; cite the contract item in your PR/commit.
 3. A task is done when: outcome demoed, seam tests pass, statuses updated, docs updated — all in one change set.
 4. `blocked` requires a reason and a note in this file; the human resolves blockers.
 5. L-sized tasks must be split into sub-tasks (recorded here) before starting.
 6. Recurring lane tasks (R1/R2) may interleave any time after Gate-M2 but never preempt an in-flight milestone task.
+7. **Lookahead clause:** The UI lane may begin the next milestone's UI tasks against contract stubs while the CORE lane closes the current milestone; CORE never builds ahead; gates still run strictly in order and are passed by the human only. *(Regularizing work already done, per maintainer decision.)*
 
 ---

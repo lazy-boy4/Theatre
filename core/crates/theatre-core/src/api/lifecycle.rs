@@ -11,7 +11,6 @@ use crate::{
     settings::Settings,
     sources::SourceRegistry,
     state::Db,
-    subtitles::SubtitleManager,
 };
 use std::{
     path::PathBuf,
@@ -20,13 +19,11 @@ use std::{
 
 /// Global app state — set once at init.
 pub(crate) struct AppState {
-    pub(crate) db: Db,
     pub(crate) settings: Arc<Settings>,
     pub(crate) history: Arc<History>,
     pub(crate) library: Arc<Library>,
     pub(crate) sources: Arc<SourceRegistry>,
     pub(crate) downloader: Arc<Downloader>,
-    pub(crate) subtitles: Arc<SubtitleManager>,
     pub(crate) proxy_port: Option<u16>,
 }
 
@@ -71,7 +68,6 @@ pub async fn init(config: InitConfig) -> Result<InitResult> {
     let library = Arc::new(Library::new(db.clone()));
     let sources = Arc::new(SourceRegistry::new(
         db.clone(),
-        settings.clone(),
         net.clone(),
     ));
 
@@ -93,11 +89,6 @@ pub async fn init(config: InitConfig) -> Result<InitResult> {
         ffmpeg,
     ));
 
-    // Subtitles cache dir
-    let subs_dir = PathBuf::from(&config.data_dir).join("subtitles");
-    std::fs::create_dir_all(&subs_dir).ok();
-    let subtitles = Arc::new(SubtitleManager::new(net.clone(), subs_dir));
-
     // Proxy (if enabled)
     let proxy_port = if config.proxy_enabled {
         match proxy::start(net.clone()).await {
@@ -112,13 +103,11 @@ pub async fn init(config: InitConfig) -> Result<InitResult> {
     };
 
     let state = AppState {
-        db,
         settings,
         history,
         library,
         sources,
         downloader,
-        subtitles,
         proxy_port,
     };
     STATE.set(state).ok(); // ok() because OnceLock ignores second set

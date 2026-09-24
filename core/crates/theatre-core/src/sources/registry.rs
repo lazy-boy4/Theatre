@@ -6,7 +6,6 @@ use crate::{
     api::types::*,
     error::{Result, TheatreError},
     net::NetClient,
-    settings::Settings,
     state::Db,
 };
 use std::{collections::HashMap, sync::Arc, time::Duration};
@@ -20,10 +19,9 @@ pub struct SourceRegistry {
 }
 
 impl SourceRegistry {
-    pub fn new(db: Db, settings: Arc<Settings>, net: NetClient) -> Self {
+    pub fn new(db: Db, net: NetClient) -> Self {
         let health = Arc::new(HealthTracker::new(db));
         let mut sources: HashMap<String, Arc<dyn Source>> = HashMap::new();
-        let _ = settings;
 
         // Register built-in sources (T2.2-T2.4: real scrapers).
         sources.insert(
@@ -167,5 +165,115 @@ impl SourceRegistry {
                 status: self.health.get_status(s.id()),
             })
             .collect()
+    }
+
+    #[cfg(test)]
+    pub(crate) fn with_sources(db: Db, custom_sources: Vec<Arc<dyn Source>>) -> Self {
+        let health = Arc::new(HealthTracker::new(db));
+        let mut sources = HashMap::new();
+        for s in custom_sources {
+            sources.insert(s.id().to_owned(), s);
+        }
+        Self { sources, health }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use async_trait::async_trait;
+
+    struct StubOkSource;
+    #[async_trait]
+    impl Source for StubOkSource {
+        fn id(&self) -> &str {
+            "stub_ok"
+        }
+        fn name(&self) -> &str {
+            "Stub OK"
+        }
+        async fn search(&self, _query: &str, _page: u32) -> Result<SearchPage> {
+            Ok(SearchPage {
+                results: vec![SearchResult {
+                    content: ContentRef {
+                        source: "stub_ok".into(),
+                        content_id: "1".into(),
+                        kind: ContentKind::Movie,
+                    },
+                    title: "Test Movie".into(),
+                    year: Some(2025),
+                    poster_url: None,
+                    quality_badges: vec!["1080p".into()],
+                }],
+                has_more: false,
+                partial: false,
+            })
+        }
+        async fn get_details(&self, _content_id: &str) -> Result<Details> {
+            Err(TheatreError::Source {
+                source: "stub_ok".into(),
+                detail: "not implemented".into(),
+            })
+        }
+        async fn resolve(&self, _content_id: &str, _variant: Option<&str>) -> Result<ResolvedStream> {
+            Err(TheatreError::Source {
+                source: "stub_ok".into(),
+                detail: "not implemented".into(),
+            })
+        }
+    }
+
+    struct StubErrSource;
+    #[async_trait]
+    impl Source for StubErrSource {
+        fn id(&self) -> &str {
+            "stub_err"
+        }
+        fn name(&self) -> &str {
+            "Stub Err"
+        }
+        async fn search(&self, _query: &str, _page: u32) -> Result<SearchPage> {
+            Err(TheatreError::Source {
+                source: "stub_err".into(),
+                detail: "scrape failed".into(),
+            })
+        }
+        async fn get_details(&self, _content_id: &str) -> Result<Details> {
+            Err(TheatreError::Source {
+                source: "stub_err".into(),
+                detail: "not implemented".into(),
+            })
+        }
+        async fn resolve(&self, _content_id: &str, _variant: Option<&str>) -> Result<ResolvedStream> {
+            Err(TheatreError::Source {
+                source: "stub_err".into(),
+                detail: "not implemented".into(),
+            })
+        }
+    }
+
+    #[tokio::test]
+    async fn fanout_search_merges_results_and_marks_degraded() {
+        let dir = std::env::temp_dir().join(format!("theatre_reg_test_{}", uuid::Uuid::now_v7()));
+        let db = Db::open(dir.join("test.db")).unwrap();
+        let registry = SourceRegistry::with_sources(
+            db,
+            vec![Arc::new(StubOkSource), Arc::new(StubErrSource)],
+        );
+
+        let page = registry.search("anything", None).await.unwrap();
+        assert_eq!(page.results.len(), 1);
+        assert_eq!(page.results[0].title, "Test Movie");
+        assert!(page.partial, "failing source should trigger partial: true");
+
+        assert_eq!(registry.health.get_status("stub_ok"), SourceStatus::Healthy);
+        match registry.health.get_status("stub_err") {
+            SourceStatus::Degraded { last_error, .. } => {
+                assert!(last_error.contains("scrape failed"));
+            }
+            other => panic!("expected degraded status, got {:?}", other),
+        }
+
+        std::fs::remove_dir_all(&dir).ok();
     }
 }

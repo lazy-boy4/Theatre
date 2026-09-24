@@ -27,7 +27,6 @@ thiserror    = { version = "2" }
 rand         = { version = "0.9" }
 uuid         = { version = "1", features = ["v7"] }
 # Async
-tokio-stream = { version = "0.1" }
 futures      = { version = "0.3" }
 async-trait  = { version = "0.1" }
 bytes        = { version = "1" }

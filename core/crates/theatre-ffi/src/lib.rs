@@ -1,3 +1,5 @@
+#![allow(unexpected_cfgs)]
+
 //! Theatre FFI bridge — flutter_rust_bridge 2.x.
 //!
 //! Thin crate: `api` holds the #[frb] functions (codegen scans

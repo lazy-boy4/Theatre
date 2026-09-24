@@ -93,3 +93,17 @@ Stop the task, mark it `blocked` in `roadmap.md` with a one-line reason, and end
 Read `docs/roadmap.md`, take the first `todo` task in your assigned lane (pre-Gate-M1: the single lane), and execute the lifecycle in §3. If no lane was assigned, ask the human whether this is a CORE or UI session.
 
 ---
+
+## Agent skills
+
+### Issue tracker
+
+Issues live as local markdown files under `.scratch/`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default five canonical labels (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context layout (`CONTEXT.md` + `docs/adr/`). See `docs/agents/domain.md`.

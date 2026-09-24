@@ -6,7 +6,7 @@
 //!   3. Implement the `Source` trait below for each
 
 pub mod bdix;
-pub mod health;
+pub(crate) mod health;
 pub mod khddhub;
 pub mod moviebox;
 pub mod registry;
