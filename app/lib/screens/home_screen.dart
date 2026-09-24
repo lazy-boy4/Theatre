@@ -113,8 +113,8 @@ class _ContinueCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final progress =
         (entry.durationSeconds != null && entry.durationSeconds! > 0)
-            ? entry.positionSeconds / entry.durationSeconds!
-            : 0.0;
+        ? entry.positionSeconds / entry.durationSeconds!
+        : 0.0;
     final remaining = entry.durationSeconds != null
         ? _remainingLabel(entry.durationSeconds! - entry.positionSeconds)
         : null;
@@ -292,7 +292,8 @@ class _BrowseGrid extends StatelessWidget {
       crossAxisSpacing: TSpace.md,
       childAspectRatio: 2.2,
       children: [
-        for (final t in tiles) _BrowseTile(label: t.$1, icon: t.$2, theme: theme),
+        for (final t in tiles)
+          _BrowseTile(label: t.$1, icon: t.$2, theme: theme),
       ],
     );
   }
@@ -326,11 +327,7 @@ class _BrowseTile extends StatelessWidget {
         child: Row(
           children: [
             const SizedBox(width: TSpace.md),
-            Icon(
-              icon,
-              color: theme.colorScheme.primary,
-              size: 24,
-            ),
+            Icon(icon, color: theme.colorScheme.primary, size: 24),
             const SizedBox(width: TSpace.sm),
             Expanded(
               child: Text(

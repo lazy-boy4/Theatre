@@ -113,8 +113,8 @@ class _HistoryTile extends ConsumerWidget {
     final theme = Theme.of(context);
     final progress =
         (entry.durationSeconds != null && entry.durationSeconds! > 0)
-            ? (entry.positionSeconds / entry.durationSeconds!).clamp(0.0, 1.0)
-            : 0.0;
+        ? (entry.positionSeconds / entry.durationSeconds!).clamp(0.0, 1.0)
+        : 0.0;
     final dt = DateTime.fromMillisecondsSinceEpoch(entry.lastWatched * 1000);
     final fmt = DateFormat.yMMMd().add_jm();
 
@@ -125,10 +125,7 @@ class _HistoryTile extends ConsumerWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: TSpace.lg),
         color: theme.colorScheme.errorContainer,
-        child: Icon(
-          Icons.delete,
-          color: theme.colorScheme.onErrorContainer,
-        ),
+        child: Icon(Icons.delete, color: theme.colorScheme.onErrorContainer),
       ),
       onDismissed: (_) async {
         await theatreDeleteHistory(id: entry.id);

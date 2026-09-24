@@ -34,9 +34,11 @@ void main() {
     });
 
     testWidgets('Search screen shows empty state', (tester) async {
-      await tester.pumpWidget(const ProviderScope(
-        child: MaterialApp(home: Scaffold(body: Text('placeholder'))),
-      ));
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(home: Scaffold(body: Text('placeholder'))),
+        ),
+      );
       // SearchScreen tested via integration; widget test checks structure only.
       expect(find.text('placeholder'), findsOneWidget);
     });

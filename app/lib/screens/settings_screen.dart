@@ -149,21 +149,21 @@ class _SettingsBody extends ConsumerWidget {
   }
 
   Widget _sectionHeader(BuildContext context, String title) => Padding(
-        padding: const EdgeInsets.fromLTRB(
-          TSpace.lg,
-          TSpace.xl,
-          TSpace.lg,
-          TSpace.xs,
-        ),
-        child: Text(
-          title.toUpperCase(),
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 1,
-              ),
-        ),
-      );
+    padding: const EdgeInsets.fromLTRB(
+      TSpace.lg,
+      TSpace.xl,
+      TSpace.lg,
+      TSpace.xs,
+    ),
+    child: Text(
+      title.toUpperCase(),
+      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+        color: Theme.of(context).colorScheme.primary,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 1,
+      ),
+    ),
+  );
 
   Future<void> _pickFromList(
     BuildContext context,

@@ -4,7 +4,11 @@ import 'package:theatre/api/types.dart';
 void main() {
   group('API contract types', () {
     test('InitConfig JSON round-trip', () {
-      const c = InitConfig(dataDir: '/tmp/test', appVersion: '0.1.0', proxyEnabled: true);
+      const c = InitConfig(
+        dataDir: '/tmp/test',
+        appVersion: '0.1.0',
+        proxyEnabled: true,
+      );
       final json = c.toJson();
       final c2 = InitConfig.fromJson(json);
       expect(c2.dataDir, '/tmp/test');
@@ -13,7 +17,11 @@ void main() {
 
     test('SearchResult JSON round-trip', () {
       const r = SearchResult(
-        content: ContentRef(source: 'moviebox', contentId: 'id1', kind: ContentKind.movie),
+        content: ContentRef(
+          source: 'moviebox',
+          contentId: 'id1',
+          kind: ContentKind.movie,
+        ),
         title: 'Inception',
         year: 2010,
         posterUrl: 'https://example.com/poster.jpg',
@@ -21,7 +29,7 @@ void main() {
       );
       final r2 = SearchResult.fromJson(r.toJson());
       expect(r2.title, 'Inception');
-      expect(r2.year,  2010);
+      expect(r2.year, 2010);
       expect(r2.qualityBadges.first, '1080p');
     });
 

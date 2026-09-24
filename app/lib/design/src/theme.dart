@@ -60,7 +60,8 @@ ThemeData theatreTheme({Brightness brightness = Brightness.dark}) {
     ),
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.resolveWith(
-        (states) => states.contains(WidgetState.selected) ? scheme.primary : null,
+        (states) =>
+            states.contains(WidgetState.selected) ? scheme.primary : null,
       ),
       trackColor: WidgetStateProperty.resolveWith(
         (states) => states.contains(WidgetState.selected)

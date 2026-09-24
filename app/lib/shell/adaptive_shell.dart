@@ -54,31 +54,31 @@ class AdaptiveShell extends StatelessWidget {
 }
 
 List<NavigationDestination> _barDestinations() => [
-      for (final d in theatreDestinations)
-        NavigationDestination(
-          icon: Icon(d.$1),
-          selectedIcon: Icon(d.$2),
-          label: d.$3,
-        ),
-    ];
+  for (final d in theatreDestinations)
+    NavigationDestination(
+      icon: Icon(d.$1),
+      selectedIcon: Icon(d.$2),
+      label: d.$3,
+    ),
+];
 
 List<NavigationRailDestination> _railDestinations() => [
-      for (final d in theatreDestinations)
-        NavigationRailDestination(
-          icon: Icon(d.$1),
-          selectedIcon: Icon(d.$2),
-          label: Text(d.$3),
-        ),
-    ];
+  for (final d in theatreDestinations)
+    NavigationRailDestination(
+      icon: Icon(d.$1),
+      selectedIcon: Icon(d.$2),
+      label: Text(d.$3),
+    ),
+];
 
 List<NavigationDrawerDestination> _drawerDestinations() => [
-      for (final d in theatreDestinations)
-        NavigationDrawerDestination(
-          icon: Icon(d.$1),
-          selectedIcon: Icon(d.$2),
-          label: Text(d.$3),
-        ),
-    ];
+  for (final d in theatreDestinations)
+    NavigationDrawerDestination(
+      icon: Icon(d.$1),
+      selectedIcon: Icon(d.$2),
+      label: Text(d.$3),
+    ),
+];
 
 class _CompactShell extends StatelessWidget {
   const _CompactShell({
@@ -92,16 +92,16 @@ class _CompactShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: SafeArea(
-          top: false,
-          child: IndexedStack(index: selectedIndex, children: children),
-        ),
-        bottomNavigationBar: NavigationBar(
-          destinations: _barDestinations(),
-          onDestinationSelected: onDestinationSelected,
-          selectedIndex: selectedIndex,
-        ),
-      );
+    body: SafeArea(
+      top: false,
+      child: IndexedStack(index: selectedIndex, children: children),
+    ),
+    bottomNavigationBar: NavigationBar(
+      destinations: _barDestinations(),
+      onDestinationSelected: onDestinationSelected,
+      selectedIndex: selectedIndex,
+    ),
+  );
 }
 
 class _MediumShell extends StatelessWidget {
@@ -116,23 +116,23 @@ class _MediumShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: SafeArea(
-          child: Row(
-            children: [
-              NavigationRail(
-                groupAlignment: 0,
-                labelType: NavigationRailLabelType.all,
-                destinations: _railDestinations(),
-                onDestinationSelected: onDestinationSelected,
-                selectedIndex: selectedIndex,
-              ),
-              Expanded(
-                child: IndexedStack(index: selectedIndex, children: children),
-              ),
-            ],
+    body: SafeArea(
+      child: Row(
+        children: [
+          NavigationRail(
+            groupAlignment: 0,
+            labelType: NavigationRailLabelType.all,
+            destinations: _railDestinations(),
+            onDestinationSelected: onDestinationSelected,
+            selectedIndex: selectedIndex,
           ),
-        ),
-      );
+          Expanded(
+            child: IndexedStack(index: selectedIndex, children: children),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class _ExpandedShell extends StatelessWidget {
@@ -147,25 +147,25 @@ class _ExpandedShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: SafeArea(
-          child: Row(
+    body: SafeArea(
+      child: Row(
+        children: [
+          NavigationDrawer(
+            selectedIndex: selectedIndex,
+            onDestinationSelected: onDestinationSelected,
             children: [
-              NavigationDrawer(
-                selectedIndex: selectedIndex,
-                onDestinationSelected: onDestinationSelected,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(28, 16, 16, 10),
-                    child: Text('Theatre'),
-                  ),
-                  ..._drawerDestinations(),
-                ],
+              const Padding(
+                padding: EdgeInsets.fromLTRB(28, 16, 16, 10),
+                child: Text('Theatre'),
               ),
-              Expanded(
-                child: IndexedStack(index: selectedIndex, children: children),
-              ),
+              ..._drawerDestinations(),
             ],
           ),
-        ),
-      );
+          Expanded(
+            child: IndexedStack(index: selectedIndex, children: children),
+          ),
+        ],
+      ),
+    ),
+  );
 }

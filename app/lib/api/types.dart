@@ -13,7 +13,8 @@ abstract class InitConfig with _$InitConfig {
     required String appVersion,
     @Default(true) bool proxyEnabled,
   }) = _InitConfig;
-  factory InitConfig.fromJson(Map<String, dynamic> j) => _$InitConfigFromJson(j);
+  factory InitConfig.fromJson(Map<String, dynamic> j) =>
+      _$InitConfigFromJson(j);
 }
 
 @freezed
@@ -24,7 +25,8 @@ abstract class InitResult with _$InitResult {
     required String coreVersion,
     required String contractVersion,
   }) = _InitResult;
-  factory InitResult.fromJson(Map<String, dynamic> j) => _$InitResultFromJson(j);
+  factory InitResult.fromJson(Map<String, dynamic> j) =>
+      _$InitResultFromJson(j);
 }
 
 enum ContentKind { movie, series, episode }
@@ -36,7 +38,8 @@ abstract class ContentRef with _$ContentRef {
     required String contentId,
     required ContentKind kind,
   }) = _ContentRef;
-  factory ContentRef.fromJson(Map<String, dynamic> j) => _$ContentRefFromJson(j);
+  factory ContentRef.fromJson(Map<String, dynamic> j) =>
+      _$ContentRefFromJson(j);
 }
 
 @freezed
@@ -48,7 +51,8 @@ abstract class SearchResult with _$SearchResult {
     String? posterUrl,
     @Default([]) List<String> qualityBadges,
   }) = _SearchResult;
-  factory SearchResult.fromJson(Map<String, dynamic> j) => _$SearchResultFromJson(j);
+  factory SearchResult.fromJson(Map<String, dynamic> j) =>
+      _$SearchResultFromJson(j);
 }
 
 @freezed
@@ -58,7 +62,8 @@ abstract class SearchPage with _$SearchPage {
     @Default(false) bool hasMore,
     @Default(false) bool partial,
   }) = _SearchPage;
-  factory SearchPage.fromJson(Map<String, dynamic> j) => _$SearchPageFromJson(j);
+  factory SearchPage.fromJson(Map<String, dynamic> j) =>
+      _$SearchPageFromJson(j);
 }
 
 @freezed
@@ -117,7 +122,8 @@ abstract class ResolvedStream with _$ResolvedStream {
     String? filenameHint,
     int? sizeBytes,
   }) = _ResolvedStream;
-  factory ResolvedStream.fromJson(Map<String, dynamic> j) => _$ResolvedStreamFromJson(j);
+  factory ResolvedStream.fromJson(Map<String, dynamic> j) =>
+      _$ResolvedStreamFromJson(j);
 }
 
 enum SourceStatus { healthy, degraded }
@@ -130,11 +136,13 @@ abstract class SourceInfo with _$SourceInfo {
     required bool enabled,
     @Default(SourceStatus.healthy) SourceStatus status,
   }) = _SourceInfo;
-  factory SourceInfo.fromJson(Map<String, dynamic> j) => _$SourceInfoFromJson(j);
+  factory SourceInfo.fromJson(Map<String, dynamic> j) =>
+      _$SourceInfoFromJson(j);
 }
 
 enum JobStatus { queued, preparing, running, paused, failed, done, cancelled }
-enum JobKind   { direct, hls }
+
+enum JobKind { direct, hls }
 
 @freezed
 abstract class DownloadJob with _$DownloadJob {
@@ -152,7 +160,8 @@ abstract class DownloadJob with _$DownloadJob {
     String? errorMsg,
     required int createdAt,
   }) = _DownloadJob;
-  factory DownloadJob.fromJson(Map<String, dynamic> j) => _$DownloadJobFromJson(j);
+  factory DownloadJob.fromJson(Map<String, dynamic> j) =>
+      _$DownloadJobFromJson(j);
 }
 
 @freezed
@@ -171,7 +180,8 @@ abstract class HistoryEntry with _$HistoryEntry {
     @Default(0) int playCount,
     @Default(false) bool completed,
   }) = _HistoryEntry;
-  factory HistoryEntry.fromJson(Map<String, dynamic> j) => _$HistoryEntryFromJson(j);
+  factory HistoryEntry.fromJson(Map<String, dynamic> j) =>
+      _$HistoryEntryFromJson(j);
 }
 
 @freezed
@@ -183,7 +193,8 @@ abstract class LibraryLocation with _$LibraryLocation {
     String? label,
     required int addedAt,
   }) = _LibraryLocation;
-  factory LibraryLocation.fromJson(Map<String, dynamic> j) => _$LibraryLocationFromJson(j);
+  factory LibraryLocation.fromJson(Map<String, dynamic> j) =>
+      _$LibraryLocationFromJson(j);
 }
 
 @freezed
@@ -195,5 +206,6 @@ abstract class MediaEntry with _$MediaEntry {
     int? sizeBytes,
     @Default(true) bool exists,
   }) = _MediaEntry;
-  factory MediaEntry.fromJson(Map<String, dynamic> j) => _$MediaEntryFromJson(j);
+  factory MediaEntry.fromJson(Map<String, dynamic> j) =>
+      _$MediaEntryFromJson(j);
 }

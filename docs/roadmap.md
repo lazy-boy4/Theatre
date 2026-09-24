@@ -29,17 +29,17 @@
 
 ## 2. Milestone M0 — Foundation (single-lane, public repo from day one)
 
-| ID | Task | Lane | Size | Outcome & verification | Docs to update |
-|---|---|---|---|---|---|
-| T0.1 | Create public GitHub repo: dual MIT/Apache-2.0 LICENSE files, README stub (vision + doc index), CONTRIBUTING, SECURITY.md, .gitignore | — | S | Repo live with community scaffolding | README |
-| T0.2 | Commit the doc set: `docs/{prd,architecture,data-contract,tech-stack,roadmap}.md` + root `AGENTS.md` (agent instructions: read docs first, this file's rules) | — | S | All docs in repo; AGENTS.md references them | — |
-| T0.3 | Scaffold Cargo workspace: `core/crates/theatre-core` (empty `api/` + stub `init`), `theatre-ffi` (empty), `tui/` placeholder; `rust-toolchain.toml` pinned | CORE | S | `cargo build --workspace` green | architecture §4 (deviations) |
-| T0.4 | Scaffold Flutter app: riverpod + go_router + adaptive shell (empty screens), `lib/design/` token-layer skeleton with `TButton`/`TCard` stubs; lint rule forbidding direct `material_3_expressive` imports in `lib/features/` | UI | M | `flutter run` shows adaptive empty shell on Windows | tech-stack §3 (exact pins), design (when created) |
-| T0.5 | CI skeleton: GitHub Actions matrix — ubuntu (core+app linux build), windows (core+app), android (cargo-ndk ×3 ABIs + APK build), macOS (core compile + tests only); all `--locked`/`--frozen` | — | M | Green CI on a trivial commit | architecture §20 |
-| T0.6 | **Pin the stack:** resolve every "locked at M0" entry in tech-stack.md, commit `pubspec.lock` + `Cargo.lock`, record exact versions in tech-stack.md tables | — | S | Lockfiles committed; tech-stack has zero "latest" entries | tech-stack |
-| T0.7 | Quality gates in CI: clippy, rustfmt, `dart analyze`, unit-test runners both sides | — | S | CI enforces lints | — |
+| ID | Status | Task | Lane | Size | Outcome & verification | Docs to update |
+|---|---|---|---|---|---|---|
+| T0.1 | `done` | Create public GitHub repo: dual MIT/Apache-2.0 LICENSE files, README stub (vision + doc index), CONTRIBUTING, SECURITY.md, .gitignore | — | S | Repo live with community scaffolding | README |
+| T0.2 | `done` | Commit the doc set: `docs/{prd,architecture,data-contract,tech-stack,roadmap}.md` + root `AGENTS.md` (agent instructions: read docs first, this file's rules) | — | S | All docs in repo; AGENTS.md references them | — |
+| T0.3 | `done` | Scaffold Cargo workspace: `core/crates/theatre-core` (empty `api/` + stub `init`), `theatre-ffi` (empty), `tui/` placeholder; `rust-toolchain.toml` pinned | CORE | S | `cargo build --workspace` green | architecture §4 (deviations) |
+| T0.4 | `done` | Scaffold Flutter app: riverpod + go_router + adaptive shell (empty screens), `lib/design/` token-layer skeleton with `TButton`/`TCard` stubs; lint rule forbidding direct `material_3_expressive` imports in `lib/features/` | UI | M | `flutter run` shows adaptive empty shell on Windows | tech-stack §3 (exact pins), design (when created) |
+| T0.5 | `done` | CI skeleton: GitHub Actions matrix — ubuntu (core+app linux build), windows (core+app), android (cargo-ndk ×3 ABIs + APK build), macOS (core compile + tests only); all `--locked`/`--frozen` | — | M | Green CI on a trivial commit | architecture §20 |
+| T0.6 | `done` | **Pin the stack:** resolve every "locked at M0" entry in tech-stack.md, commit `pubspec.lock` + `Cargo.lock`, record exact versions in tech-stack.md tables | — | S | Lockfiles committed; tech-stack has zero "latest" entries | tech-stack |
+| T0.7 | `done` | Quality gates in CI: clippy, rustfmt, `dart analyze`, unit-test runners both sides | — | S | CI enforces lints | — |
 
-**Gate-M0:** repo public, CI green on all four runners, docs committed. Demo: clone → build → run empty app on Windows.
+**Gate-M0:** repo public, CI green on all four runners, docs committed. Demo: clone → build → run empty app on Windows. (Passed)
 
 ## 3. Milestone M1 — Seam Prototype (single-lane; opens two lanes at its gate)
 

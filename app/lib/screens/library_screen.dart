@@ -26,9 +26,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
-          _browsePath != null ? _basename(_browsePath!) : 'Library',
-        ),
+        title: Text(_browsePath != null ? _basename(_browsePath!) : 'Library'),
         leading: _browsePath != null
             ? BackButton(onPressed: () => setState(() => _browsePath = null))
             : null,
@@ -67,7 +65,11 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   void _handleEntry(MediaEntry entry) {
     if (!entry.exists) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('"${entry.name}" is missing — it may have been moved or deleted.')),
+        SnackBar(
+          content: Text(
+            '"${entry.name}" is missing — it may have been moved or deleted.',
+          ),
+        ),
       );
       return;
     }
@@ -95,9 +97,9 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 
   Future<void> _addFolder() async {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text(_pickerUnavailableMessage)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text(_pickerUnavailableMessage)));
   }
 }
 
@@ -141,10 +143,7 @@ class _LocationsList extends ConsumerWidget {
             color: Theme.of(context).colorScheme.primary,
           ),
           title: Text(loc.label ?? loc.path),
-          subtitle: Text(
-            loc.path,
-            overflow: TextOverflow.ellipsis,
-          ),
+          subtitle: Text(loc.path, overflow: TextOverflow.ellipsis),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

@@ -16,3 +16,5 @@ analyzer:
     - lib/ffi/bridge.dart
     - build/**
     - windows/**
+    - android/**
+    - linux/**

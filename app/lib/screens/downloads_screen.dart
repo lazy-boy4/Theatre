@@ -84,10 +84,7 @@ class _DownloadTile extends ConsumerWidget {
     final statusColor = _statusColor(theme);
 
     return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: TSpace.md,
-        vertical: 6,
-      ),
+      margin: const EdgeInsets.symmetric(horizontal: TSpace.md, vertical: 6),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
@@ -141,7 +138,8 @@ class _DownloadTile extends ConsumerWidget {
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-              if (job.status == JobStatus.running && job.totalSegments != null) ...[
+              if (job.status == JobStatus.running &&
+                  job.totalSegments != null) ...[
                 const SizedBox(width: TSpace.sm),
                 Text(
                   '${job.segmentsDone}/${job.totalSegments} parts',
@@ -183,23 +181,23 @@ class _DownloadTile extends ConsumerWidget {
   /// State vocabulary: primary = working, amber = waiting, error = failed.
   /// Red means failure and nothing else (docs/design.md: The One Voice Rule).
   Color _statusColor(ThemeData theme) => switch (job.status) {
-        JobStatus.done => Colors.green,
-        JobStatus.failed => theme.colorScheme.error,
-        JobStatus.paused => Colors.amber,
-        JobStatus.running => theme.colorScheme.primary,
-        JobStatus.cancelled => theme.colorScheme.onSurfaceVariant,
-        _ => theme.colorScheme.onSurfaceVariant,
-      };
+    JobStatus.done => Colors.green,
+    JobStatus.failed => theme.colorScheme.error,
+    JobStatus.paused => Colors.amber,
+    JobStatus.running => theme.colorScheme.primary,
+    JobStatus.cancelled => theme.colorScheme.onSurfaceVariant,
+    _ => theme.colorScheme.onSurfaceVariant,
+  };
 
   String _statusLabel() => switch (job.status) {
-        JobStatus.queued => 'Queued',
-        JobStatus.preparing => 'Preparing…',
-        JobStatus.running => 'Downloading',
-        JobStatus.paused => 'Paused',
-        JobStatus.failed => 'Failed',
-        JobStatus.done => 'Done',
-        JobStatus.cancelled => 'Cancelled',
-      };
+    JobStatus.queued => 'Queued',
+    JobStatus.preparing => 'Preparing…',
+    JobStatus.running => 'Downloading',
+    JobStatus.paused => 'Paused',
+    JobStatus.failed => 'Failed',
+    JobStatus.done => 'Done',
+    JobStatus.cancelled => 'Cancelled',
+  };
 
   String _sizeLabel() {
     String fmt(int b) {
@@ -209,6 +207,7 @@ class _DownloadTile extends ConsumerWidget {
       }
       return '${(b / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
     }
+
     if (job.totalBytes != null) {
       return '${fmt(job.bytesDone)} / ${fmt(job.totalBytes!)}';
     }

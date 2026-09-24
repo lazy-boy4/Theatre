@@ -176,10 +176,7 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
               const Center(child: CircularProgressIndicator()),
             if (_status == _PlayerStatus.error)
               _ErrorPanel(
-                onRetry: () => _open(
-                  widget.stream.url,
-                  widget.stream.headers,
-                ),
+                onRetry: () => _open(widget.stream.url, widget.stream.headers),
                 onRefreshLink: _refreshLink,
                 onBackToDetails: () => Navigator.pop(context),
               ),
@@ -364,10 +361,7 @@ class _OverlayControlsState extends State<_OverlayControls> {
                   Expanded(
                     child: Text(
                       widget.title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
+                      style: const TextStyle(color: Colors.white, fontSize: 14),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -394,9 +388,7 @@ class _OverlayControlsState extends State<_OverlayControls> {
               child: IconButton(
                 iconSize: 64,
                 icon: Icon(
-                  snap.data == true
-                      ? Icons.pause_circle
-                      : Icons.play_circle,
+                  snap.data == true ? Icons.pause_circle : Icons.play_circle,
                   color: Colors.white,
                   size: 64,
                 ),
@@ -406,7 +398,12 @@ class _OverlayControlsState extends State<_OverlayControls> {
           ),
           const Spacer(),
           Padding(
-            padding: const EdgeInsets.fromLTRB(TSpace.lg, 0, TSpace.lg, TSpace.xxl),
+            padding: const EdgeInsets.fromLTRB(
+              TSpace.lg,
+              0,
+              TSpace.lg,
+              TSpace.xxl,
+            ),
             child: Column(
               children: [
                 StreamBuilder<Duration>(
@@ -423,9 +420,7 @@ class _OverlayControlsState extends State<_OverlayControls> {
                                 ? pos.inSeconds / dur.inSeconds
                                 : 0,
                             onChanged: (v) => widget.player.seek(
-                              Duration(
-                                seconds: (v * dur.inSeconds).round(),
-                              ),
+                              Duration(seconds: (v * dur.inSeconds).round()),
                             ),
                             semanticFormatterCallback: (v) =>
                                 '${_fmt(pos)} of ${_fmt(dur)}',
@@ -537,44 +532,44 @@ class _SpeedButtonState extends State<_SpeedButton> {
     return Tooltip(
       message: 'Playback speed',
       child: TextButton(
-      onPressed: () async {
-        final val = await showModalBottomSheet<double>(
-          context: context,
-          builder: (_) => SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(TSpace.lg),
-                  child: Text(
-                    'Playback speed',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+        onPressed: () async {
+          final val = await showModalBottomSheet<double>(
+            context: context,
+            builder: (_) => SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(TSpace.lg),
+                    child: Text(
+                      'Playback speed',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                for (final s in speeds)
-                  ListTile(
-                    title: Text('${s}x'),
-                    trailing: s == current
-                        ? Icon(
-                            Icons.check,
-                            color: Theme.of(context).colorScheme.primary,
-                          )
-                        : null,
-                    onTap: () => Navigator.pop(context, s),
-                  ),
-              ],
+                  for (final s in speeds)
+                    ListTile(
+                      title: Text('${s}x'),
+                      trailing: s == current
+                          ? Icon(
+                              Icons.check,
+                              color: Theme.of(context).colorScheme.primary,
+                            )
+                          : null,
+                      onTap: () => Navigator.pop(context, s),
+                    ),
+                ],
+              ),
             ),
-          ),
-        );
-        if (val != null) {
-          await widget.player.setRate(val);
-          setState(() => current = val);
-        }
-      },
-      child: Text(
-        '${current}x',
-        style: const TextStyle(color: Colors.white, fontSize: 13),
-      ),
+          );
+          if (val != null) {
+            await widget.player.setRate(val);
+            setState(() => current = val);
+          }
+        },
+        child: Text(
+          '${current}x',
+          style: const TextStyle(color: Colors.white, fontSize: 13),
+        ),
       ),
     );
   }

@@ -197,10 +197,8 @@ class _PosterCard extends StatelessWidget {
         onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => DetailScreen(
-              content: result.content,
-              title: result.title,
-            ),
+            builder: (_) =>
+                DetailScreen(content: result.content, title: result.title),
           ),
         ),
         child: ClipRRect(
@@ -212,8 +210,7 @@ class _PosterCard extends StatelessWidget {
                   ? Image.network(
                       result.posterUrl!,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
-                          const _PosterPlaceholder(),
+                      errorBuilder: (_, __, ___) => const _PosterPlaceholder(),
                     )
                   : const _PosterPlaceholder(),
               Positioned(
@@ -243,8 +240,7 @@ class _PosterCard extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      if (result.year != null)
-                        const SizedBox(height: 2),
+                      if (result.year != null) const SizedBox(height: 2),
                       if (result.year != null)
                         Text(
                           '${result.year}',

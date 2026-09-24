@@ -215,7 +215,11 @@ mod tests {
                 detail: "not implemented".into(),
             })
         }
-        async fn resolve(&self, _content_id: &str, _variant: Option<&str>) -> Result<ResolvedStream> {
+        async fn resolve(
+            &self,
+            _content_id: &str,
+            _variant: Option<&str>,
+        ) -> Result<ResolvedStream> {
             Err(TheatreError::Source {
                 source: "stub_ok".into(),
                 detail: "not implemented".into(),
@@ -244,7 +248,11 @@ mod tests {
                 detail: "not implemented".into(),
             })
         }
-        async fn resolve(&self, _content_id: &str, _variant: Option<&str>) -> Result<ResolvedStream> {
+        async fn resolve(
+            &self,
+            _content_id: &str,
+            _variant: Option<&str>,
+        ) -> Result<ResolvedStream> {
             Err(TheatreError::Source {
                 source: "stub_err".into(),
                 detail: "not implemented".into(),
@@ -256,10 +264,8 @@ mod tests {
     async fn fanout_search_merges_results_and_marks_degraded() {
         let dir = std::env::temp_dir().join(format!("theatre_reg_test_{}", uuid::Uuid::now_v7()));
         let db = Db::open(dir.join("test.db")).unwrap();
-        let registry = SourceRegistry::with_sources(
-            db,
-            vec![Arc::new(StubOkSource), Arc::new(StubErrSource)],
-        );
+        let registry =
+            SourceRegistry::with_sources(db, vec![Arc::new(StubOkSource), Arc::new(StubErrSource)]);
 
         let page = registry.search("anything", None).await.unwrap();
         assert_eq!(page.results.len(), 1);

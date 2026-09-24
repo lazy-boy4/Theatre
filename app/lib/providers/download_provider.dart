@@ -25,14 +25,33 @@ class DownloadNotifier extends AsyncNotifier<List<DownloadJob>> {
     String title, {
     String? variant,
   }) async {
-    final id = await theatreEnqueueDownload(content: content, stream: stream, title: title, variant: variant);
+    final id = await theatreEnqueueDownload(
+      content: content,
+      stream: stream,
+      title: title,
+      variant: variant,
+    );
     await _refresh();
     return id;
   }
 
-  Future<void> pause(String id)  async { await theatrePauseDownload(id: id);  await _refresh(); }
-  Future<void> cancel(String id) async { await theatreCancelDownload(id: id); await _refresh(); }
-  Future<void> resume(String id) async { await theatreResumeDownload(id: id); await _refresh(); }
+  Future<void> pause(String id) async {
+    await theatrePauseDownload(id: id);
+    await _refresh();
+  }
+
+  Future<void> cancel(String id) async {
+    await theatreCancelDownload(id: id);
+    await _refresh();
+  }
+
+  Future<void> resume(String id) async {
+    await theatreResumeDownload(id: id);
+    await _refresh();
+  }
 }
 
-final downloadProvider = AsyncNotifierProvider<DownloadNotifier, List<DownloadJob>>(DownloadNotifier.new);
+final downloadProvider =
+    AsyncNotifierProvider<DownloadNotifier, List<DownloadJob>>(
+      DownloadNotifier.new,
+    );

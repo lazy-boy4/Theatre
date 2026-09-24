@@ -66,10 +66,7 @@ pub async fn init(config: InitConfig) -> Result<InitResult> {
     let settings = Arc::new(Settings::new(db.clone()));
     let history = Arc::new(History::new(db.clone()));
     let library = Arc::new(Library::new(db.clone()));
-    let sources = Arc::new(SourceRegistry::new(
-        db.clone(),
-        net.clone(),
-    ));
+    let sources = Arc::new(SourceRegistry::new(db.clone(), net.clone()));
 
     // FFmpeg sidecar
     let ffmpeg = Arc::new(

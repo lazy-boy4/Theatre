@@ -63,8 +63,7 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
               const SizedBox(height: TSpace.md),
               if (details.description != null)
                 ..._descriptionBlock(context, details.description!),
-              if (details.episodes.isNotEmpty)
-                _EpisodeList(details: details),
+              if (details.episodes.isNotEmpty) _EpisodeList(details: details),
             ]),
           ),
         ),
@@ -113,7 +112,7 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
               v.id,
               v.bitrateKbps != null
                   ? '${v.label} · ${v.bitrateKbps} kbps'
-                  : v.label
+                  : v.label,
             ),
         ],
         selected: _variant ?? '',
@@ -200,7 +199,7 @@ class _StreamMetaRow extends ConsumerWidget {
                             s.id,
                             s.status == SourceStatus.degraded
                                 ? '${s.name} · having trouble'
-                                : s.name
+                                : s.name,
                           ),
                       ],
                       selected: details.content.source,
@@ -425,9 +424,7 @@ class _MetaRow extends StatelessWidget {
     return Wrap(
       spacing: TSpace.md,
       runSpacing: TSpace.xs,
-      children: [
-        for (final p in parts) Chip(label: Text(p)),
-      ],
+      children: [for (final p in parts) Chip(label: Text(p))],
     );
   }
 
@@ -442,9 +439,7 @@ List<Widget> _descriptionBlock(BuildContext context, String desc) {
   return [
     Text(
       'About',
-      style: theme.textTheme.titleMedium?.copyWith(
-        fontWeight: FontWeight.w600,
-      ),
+      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
     ),
     const SizedBox(height: TSpace.sm),
     Text(desc, style: theme.textTheme.bodyMedium?.copyWith(height: 1.4)),
@@ -514,11 +509,7 @@ class _EpisodeTile extends ConsumerWidget {
             ),
       title: Text('S${ep.season} E${ep.episode}: ${ep.title}'),
       subtitle: ep.description != null
-          ? Text(
-              ep.description!,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            )
+          ? Text(ep.description!, maxLines: 2, overflow: TextOverflow.ellipsis)
           : null,
       trailing: const Icon(Icons.play_arrow),
       onTap: () => playContent(
@@ -546,11 +537,7 @@ class _ErrorBody extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const BackButton(),
-            Icon(
-              Icons.error_outline,
-              color: theme.colorScheme.error,
-              size: 48,
-            ),
+            Icon(Icons.error_outline, color: theme.colorScheme.error, size: 48),
             const SizedBox(height: TSpace.md),
             Text(
               "Couldn't load these details. The source may be down — try another source, or retry.",
