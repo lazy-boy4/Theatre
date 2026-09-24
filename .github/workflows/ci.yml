@@ -51,10 +51,12 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - uses: rustsec/audit-check@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          working-directory: core
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-audit
+        run: cargo install cargo-audit --locked
+      - name: Run audit
+        working-directory: core
+        run: cargo audit
 
   # ── Benchmarks (comment P50/P99 on PR) ─────────────────────
   bench:
@@ -90,8 +92,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.x'
           channel: stable
+          cache: true
 
       - run: flutter pub get
       - run: flutter analyze --fatal-infos
@@ -117,8 +119,8 @@ jobs:
           java-version: '17'
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.x'
           channel: stable
+          cache: true
       - name: Install cargo-ndk
         run: cargo install cargo-ndk --locked
       - name: Build Rust core for Android (3 ABIs)
@@ -144,8 +146,8 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.x'
           channel: stable
+          cache: true
       - name: Install Linux build dependencies
         run: sudo apt-get update && sudo apt-get install -y cmake clang ninja-build pkg-config libgtk-3-dev
       - name: Build Rust core
@@ -171,8 +173,8 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.x'
           channel: stable
+          cache: true
       - name: Build Rust core
         working-directory: core
         run: cargo build --release --locked -p theatre-ffi
