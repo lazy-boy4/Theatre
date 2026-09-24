@@ -33,3 +33,6 @@ vendor/yt-dlp/bin/
 .env
 *.key
 secrets.json
+
+# Local skill scratch/caches
+.impeccable/
